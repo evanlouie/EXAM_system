@@ -1,0 +1,69 @@
+<?php
+foreach (glob("../_classes/*.php") as $filename) {
+	require "$filename";
+}
+session_start();
+if (isset($_SESSION['user_id'])) {
+	$user_id = $_SESSION['user_id'];
+	$user = new user;
+	$user->getFromDB($user_id);
+} else {
+	echo "ERROR: user session error, make sure cookies are accepted. Contact admin if error continues";
+}
+$exam_id = $_GET['exam_id'];
+$exam = new exam;
+$exam->getFromDB($exam_id);
+
+$everything = $exam->getEverythingInArray();
+var_dump($everything);
+$h1 = $exam->get_title();
+
+?>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>EXAM System</title>
+	<link rel="stylesheet" type="text/css" href="../_css/styles.css"/>
+</head>
+<body>
+
+<div id="container">
+	<h1><?php echo $h1 ?></h1>
+
+	<div id="body">
+		<p>Fill out all information:</p>
+		<code>
+			<p>Note: Keep your passwords simple (letters and numbers), security measures will mess up your password if you start using escapable strings. If you have no idea what and escapable string is, then your probably fine.</p>
+			<form method="post" action="newUser.php">
+				<table>
+					<tr>
+						<td>First Name:</td>
+						<td><input type="text" name="fname" value="" size=50></td>
+					</tr>
+					<tr>
+						<td>Last Name:</td>
+						<td><input type="text" name="lname" value="" size=50></td>
+					</tr>
+					<tr>
+						<td>Email:</td>
+						<td><input type="text" name="email" value="" size=50></td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td><input type="password" name="password" value="" size=50></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input style="float:right;" type="submit" value="Register"></td>
+					</tr>
+				</table>
+			</form>
+		</code>
+	</div>
+
+	<p class="footer">Design: <a href="http://www.evanlouie.com"><strong>www.evanlouie.com</strong></a></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:ct="http://client.incr.tpip.bosap.com"
+           targetNamespace="http://client.incr.tpip.bosap.com"
+           xmlns:tns="http://www.example.org/context"
+           elementFormDefault="qualified">
+
+    <xs:annotation>
+         <xs:documentation><![CDATA[
+            Author : jeffrey.shi@sap.com
+            Purpose: This document defines the context file structure for incremental scanning process.
+            Notes:
+            . Support version involution and moving code locations within same repository.
+            . branch: Attibute can be used on context, repository, and paths element.
+                The purpose of branch attribute is to specify pattern(s) to be applied to the current project path values
+                to get back the old project path values.
+
+                Syntax    : branch=[new token]<{n}>=>[old token];[new token]<{n}=>[old token]
+
+                branch=   : attribute to use patterns.
+                new token : mandatory, the directory name in the new path which is the value of <path> element.
+                old token : mandatory, the directory name in the old path.
+                =>        : mandatory, separates old and new directory.
+                {n}       : optional, 0-based index. To distinguish the instance, when the token appears multiple times in the path.
+                ;         : delimiter, only use if multiple patterns are specified.
+
+                ex:
+                <repository id="1" description="branch domo" branch="internal2{1}=>internal;5.0=>4.0">
+                    ....
+                    <paths id="1" cat="src" description="just for demo">
+                        <path ver="latest">//internal2/internal2/internal.platform.sdk.boe.java/5.0/REL/...</path>
+                        ....
+                    </paths>
+                       ....
+                    </repository>
+                The old path is //internal2/internal/internal.platform.sdk.boe.java/4.0/REL/...
+                . old: Attribute can only be used on path element. See relevant inline doc.
+            For more info see https://tdwiki.pgdev.sap.corp/display/GTLC/Context+File+Requirement ]]>
+        </xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="context">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+            import element content: fully qualified p4 path to the context file to be imported.
+            ]]>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="contact">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="name"   type="xs:token"  maxOccurs="1"          minOccurs="1"/>
+                            <xs:element name="email"  type="xs:token"  maxOccurs="1"          minOccurs="1"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="repository"         type="ct:repository"  maxOccurs="unbounded"  minOccurs="1"/>
+                <xs:element name="dependency"                               maxOccurs="unbounded"  minOccurs="0">
+                    <xs:complexType >
+                        <xs:sequence>
+                            <xs:element name="import"  maxOccurs="unbounded" minOccurs="1">
+                                  <xs:complexType>
+                                     <xs:simpleContent>
+                                        <xs:extension base="xs:token">
+                                            <xs:attribute name="id"          type="xs:int"    use="required"/>
+                                            <xs:attribute name="description" type="xs:string"/>
+                                         </xs:extension>
+                                     </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="id"          type="xs:int"     use="required"/>
+                        <xs:attribute name="description" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="branch"       type="xs:token"/>
+            <xs:attribute name="description"  type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="repository">
+        <xs:sequence>
+            <xs:element name="type"         type="ct:repositoryType" maxOccurs="1"         minOccurs="1"/>
+            <xs:element name="host"         type="xs:token"          maxOccurs="1"         minOccurs="1"/>
+            <xs:element name="port"         type="xs:int"            maxOccurs="1"         minOccurs="0"/>
+            <xs:element name="paths"        type="ct:paths"          maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute   name="id"           type="xs:int"            use="required"/>
+        <xs:attribute   name="branch"       type="xs:token"/>
+        <xs:attribute   name="description"  type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="paths">
+       <xs:annotation>
+          <xs:documentation><![CDATA[
+          Note that access is of type abstractAccess. For xml validation by xsd, xsi:type="<concrete type>" is needed
+          <access xsi:type="ct:gitAccess">
+              <protocol>ssh</protocol>
+              <port>12345</port>
+          </access>
+                  ]]>
+          </xs:documentation>
+       </xs:annotation>
+        <xs:sequence>
+            <xs:element name="access"       type="ct:abstractAccess"  maxOccurs="1"           minOccurs="0"/>
+            <xs:element name="path"         type="ct:path"            maxOccurs="unbounded"   minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="id"             type="xs:int"             use="required"/>
+        <xs:attribute name="cat"            type="ct:catType"         use="required"/>
+        <xs:attribute name="description"    type="xs:string"/>
+        <xs:attribute name="branch"         type="xs:token"/>
+    </xs:complexType>
+
+    <xs:complexType name="path">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                All path element in most cases is a directory therefore backslash is required at the end plus additional path
+                indicator based on the type of repository.
+                Perforce path: fully qualified path is expected with /... at the end.
+                    i.e <path ver="latest" old="//depot/a/1.0/REL/...">//experiment/z/1.1/trunk/...</path>
+                Dtr path: i.e. /dtr/ws/VCM100/sap.com_VCM/dev/active/
+                Git path: i.e.  /NGP/LJS/com.sap.corp.deploy.git
+                Clearcase path: i.e.
+                Subversion path: i.e. /svn/bpm-workflow-howto/
+
+                ]]>
+            </xs:documentation>
+        </xs:annotation>
+        <xs:simpleContent>
+            <xs:extension base="xs:token">
+              <xs:attribute name="ver"    type="ct:validVersion"      use="required"/>
+              <xs:attribute name="old"    type="xs:token"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:simpleType name="catType">
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="src"/>
+            <xs:enumeration value="tpip"/>
+            <xs:enumeration value="test"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="validVersion">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                "latest" works for all the use cases that we see so far. Once the product version
+                is integrated into the process, incremental scan will catch issue ASAP. There might
+                be false positive but the process is designed to be conservative.
+                If you have concerns, please contact the author.]]>
+             </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:token">
+            <xs:enumeration value="latest"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="repositoryType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="perforce"/>
+            <xs:enumeration value="subversion"/>
+            <xs:enumeration value="clearcase"/>
+            <xs:enumeration value="dtr"/>
+            <xs:enumeration value="git"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:group name="clearcaseProject">
+        <xs:sequence>
+            <xs:element name="project"    type="xs:token"   maxOccurs="1"     minOccurs="1"/>
+             <xs:element name="user"       type="xs:token"   maxOccurs="1"     minOccurs="1"/>
+            <xs:element name="cspec"      type="xs:token"   maxOccurs="1"     minOccurs="1"/>
+        </xs:sequence>
+    </xs:group>
+
+
+    <xs:complexType name="abstractAccess" abstract="true"/>
+
+    <xs:complexType name="gitAccess">
+        <xs:complexContent>
+            <xs:extension base="ct:abstractAccess">
+                <xs:sequence>
+                    <xs:element name="protocol" maxOccurs="1" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:token">
+                                <xs:enumeration value="ssh"/>
+                                <xs:enumeration value="git"/>
+                           <!--
+                                <xs:enumeration value="https"/>
+                                <xs:enumeration value="http"/>
+                                ......
+                           -->
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="port" type="xs:int" maxOccurs="1" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="svnAccess">
+        <xs:annotation>
+            <xs:documentation><![CDATA[
+                <share> is used with <protocol>file</protocol> only and it is FQDN file system share path
+             ]]>
+             </xs:documentation>
+        </xs:annotation>
+        <xs:complexContent>
+            <xs:extension base="ct:abstractAccess">
+                <xs:sequence>
+                    <xs:element name="protocol" maxOccurs="1" minOccurs="0">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:token">
+                                <xs:enumeration value="http"/>
+                                <xs:enumeration value="https"/>
+                                <xs:enumeration value="file"/>
+                           <!--
+                                <xs:enumeration value="svn"/>
+                                <xs:enumeration value="svn+ssh"/>
+                           -->
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="port" type="xs:int" maxOccurs="1" minOccurs="0"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="clearcaseAccess">
+        <xs:complexContent>
+            <xs:extension base="ct:abstractAccess">
+                <xs:sequence>
+                    <xs:element name="project" type="xs:string" maxOccurs="1" minOccurs="1"/>
+                    <xs:element name="user"    type="xs:string" maxOccurs="1" minOccurs="1"/>
+                    <xs:element name="cspec"   type="xs:string" maxOccurs="1" minOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+</xs:schema>

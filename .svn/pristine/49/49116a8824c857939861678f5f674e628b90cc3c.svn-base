@@ -1,0 +1,371 @@
+<?php
+foreach ( glob ( "../_classes/*.php" ) as $filename ) {
+	require "$filename";
+}
+require "../_functions/functions.php";
+
+session_start ();
+if (! isset ( $_SESSION ['user_id'] )) {
+	die ( "User ID not set, make sure you are logged in and cookies are enabled" );
+}
+$admin = new admin ();
+if (! $admin->isAdmin ( $_SESSION ['user_id'] )) {
+	die ( "User does not have admin rights" );
+}
+$exam = new exam ();
+$examObjectArray = $exam->getListOfAllExamsAsObjectArray ();
+$examList = '<option></option>';
+while ( ! empty ( $examObjectArray ) ) {
+	$obj = array_pop ( $examObjectArray );
+	$examList = $examList . "<option value='$obj->exam_id'>$obj->title</option>";
+}
+$section = new section ();
+$sectionObjectArray = $section->getListOfAllSectionsAsObjectArray ();
+$sectionList = '<option></option>';
+while ( ! empty ( $sectionObjectArray ) ) {
+	$obj = array_pop ( $sectionObjectArray );
+	if (isset ( $_GET ['section_id'] )) {
+		if ($_GET ['section_id'] == $obj->section_id) {
+			$sectionList = $sectionList . "<option value='$obj->section_id' selected='selected'>$obj->title</option>";
+		} else {
+			$sectionList = $sectionList . "<option value='$obj->section_id'>$obj->title</option>";
+		}
+	} else {
+		$sectionList = $sectionList . "<option value='$obj->section_id'>$obj->title</option>";
+	}
+}
+
+$question = new question ();
+$questionObjectArray = $question->getListOfAllQuestionsAsObjectArray ();
+$questionList = '<option></option>';
+while ( ! empty ( $questionObjectArray ) ) {
+	$obj = array_pop ( $questionObjectArray );
+	if (isset ( $_GET ['question_id'] )) {
+		if ($_GET ['question_id'] == $obj->question_id) {
+			$questionList = $questionList . "<option value='$obj->question_id' selected='selected'>$obj->question</option>";
+		} else {
+			$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
+		}
+	} else {
+		$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
+	}
+}
+
+if (isset ( $_GET ['exam_id'] )) {
+	$exam = new exam ();
+	$exam->getFromDB ( $_GET ['exam_id'] );
+	
+	$includedSectionsOptionItems = '';
+	$includedSections = '';
+	$sections = $exam->getAllIncludedSectionsAsObjectArray ();
+	while ( ! empty ( $sections ) ) {
+		$s = array_pop ( $sections );
+		$section = new section ();
+		$section->getFromDB ( $s->section_id );
+		$includedSections = $includedSections . "<li class='includedSection' value='" . $section->get_section_id () . "'>" . $section->get_title () . "</li>";
+		$includedSectionsOptionItems .= "<option value='" . $section->get_section_id () . "'>" . $section->get_title () . "</option>";
+	}
+	
+	$excludedSections = '';
+	$sections = $exam->getAllExcludedSectionsAsObjectArray ();
+	while ( ! empty ( $sections ) ) {
+		$s = array_pop ( $sections );
+		$section = new section ();
+		$section->getFromDB ( $s->section_id );
+		$excludedSections = $excludedSections . "<li class='excludedSection' value='" . $section->get_section_id () . "'>" . $section->get_title () . "</li>";
+	}
+}
+
+if (isset ( $_GET ['exam_id'] ) && isset ( $_GET ['section_id'] )) {
+	$includedQuestions = '';
+	$excludedQuestions = '';
+	
+	$esm = new exam_section_map ();
+	$esm->set_exam_id ( $_GET ['exam_id'] );
+	$esm->set_section_id ( $_GET ['section_id'] );
+	$includedQuestionArray = $esm->get_all_associated_question_id_as_array ();
+	while ( ! empty ( $includedQuestionArray ) ) {
+		$question_id = array_pop ( $includedQuestionArray );
+		$question = new question ();
+		$question->getFromDB ( $question_id );
+		$includedQuestions .= "<li class='includedQuestion' value='" . $question->get_question_id () . "'>" . $question->get_question () . "</li>";
+	}
+	$excludedQuestionArray = $esm->get_all_non_associated_question_id_as_array ();
+	while ( ! empty ( $excludedQuestionArray ) ) {
+		$question_id = array_pop ( $excludedQuestionArray );
+		$question = new question ();
+		$question->getFromDB ( $question_id );
+		$excludedQuestions .= "<li class='excludedQuestion' value='" . $question->get_question_id () . "'>" . $question->get_question () . "</li>";
+	}
+	var_dump ( $includedQuestions );
+	var_dump ( $excludedQuestions );
+}
+
+// Adding Incorrect Answers:
+if (isset ( $_GET ['sectionQuestionIncorrectAnswer'] ) && isset ( $_GET ['section_id'] ) && isset ( $_GET ['question_id'] )) {
+	$sqam = new section_question_answer_map ();
+	if (! $sqam->getFromDB ( $sqam->get_sqam_id_from_section_and_question ( $_GET ['section_id'], $_GET ['question_id'] ) )) {
+		die ( "<div id='incorrectAnswerList'>This question is not currently mapped to this section</div>" );
+	}
+	$sqam->getFromDB ( $sqam->get_sqam_id_from_section_and_question ( $_GET ['section_id'], $_GET ['question_id'] ) );
+	
+	$includedIncorrectAnswers = '<form>';
+	// $includedIncorrectAnswersArray = $sqam ->
+	// getAllIncludedIncorrectAnswersAsObjectArray();
+	$includedIncorrectAnswersArray = $sqam->getAllAssociatedAnswersAsObjectArray ();
+	while ( ! empty ( $includedIncorrectAnswersArray ) ) {
+		$a = array_pop ( $includedIncorrectAnswersArray );
+		$answer = new answer ();
+		$answer->getFromDB ( $a->answer_id );
+		if ($sqam->answer_id == $answer->answer_id) {
+			$includedIncorrectAnswers = $includedIncorrectAnswers . "<input type='radio' name='answers' checked='yes' class='includedIncorrectAnswer' value='" . $answer->get_answer_id () . "'>" . "<text value='$answer->answer_id' class='includedIncorrectAnswer'>" . $answer->get_answer () . "</text>" . "<br>";
+		} else {
+			$includedIncorrectAnswers = $includedIncorrectAnswers . "<input type='radio' name='answers' class='includedIncorrectAnswer' value='" . $answer->get_answer_id () . "'>" . "<text value='$answer->answer_id' class='includedIncorrectAnswer'>" . $answer->get_answer () . "</text>" . "<br>";
+		}
+	}
+	$includedIncorrectAnswers .= '</form>';
+	
+	$excludedIncorrectAnswers = '';
+	$excludedIncorrectAnswersArray = $sqam->getAllExcludedIncorrectAnswersAsObjectArray ();
+	while ( ! empty ( $excludedIncorrectAnswersArray ) ) {
+		$a = array_pop ( $excludedIncorrectAnswersArray );
+		$answer = new answer ();
+		$answer->getFromDB ( $a->answer_id );
+		$excludedIncorrectAnswers = $excludedIncorrectAnswers . "<li class='excludedIncorrectAnswer' value='" . $answer->get_answer_id () . "'>" . $answer->get_answer () . "</li>";
+	}
+}
+// Adding Correct Answers:
+if (isset ( $_GET ['sectionQuestionAnswer'] ) && isset ( $_GET ['section_id'] ) && isset ( $_GET ['question_id'] )) {
+	$sqam = new section_question_answer_map ();
+	$correctAnswer = '';
+	if ($sqam->getFromDB ( $sqam->get_sqam_id_from_section_and_question ( $_GET ['section_id'], $_GET ['question_id'] ) )) {
+		$sqam->getFromDB ( $sqam->get_sqam_id_from_section_and_question ( $_GET ['section_id'], $_GET ['question_id'] ) );
+		$incorrectAnswers = $sqam->getAllIncorrectAnswersAsObjectArray ();
+		$answer = new answer ();
+		$answer->getFromDB ( $sqam->get_answer_id () );
+		$correctAnswer = "<li class='correctAnswer' value='" . $answer->get_answer_id () . "'>" . $answer->get_answer () . "</li>";
+	} else {
+		$sqam->set_section_id ( $_GET ['section_id'] );
+		$sqam->set_question_id ( $_GET ['question_id'] );
+		$sqam->set_answer_id ( 1 );
+		$sqam->set_status ( 1 );
+		$sqam->saveToDatabase ();
+	}
+	$incorrectAnswersArray = $sqam->getAllIncorrectAnswersAsObjectArray ();
+	$incorrectAnswers = '';
+	while ( ! empty ( $incorrectAnswersArray ) ) {
+		$a = array_pop ( $incorrectAnswersArray );
+		$answer = new answer ();
+		$answer->getFromDB ( $a->answer_id );
+		$incorrectAnswers = $incorrectAnswers . "<li class='incorrectAnswer' value='" . $answer->get_answer_id () . "'>" . $answer->get_answer () . "</li>";
+	}
+}
+?>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EXAM System</title>
+<link rel="stylesheet" type="text/css" href="../_css/styles.css" />
+<script type="text/javascript" src="../_script/jquery.js"></script>
+<script type="text/javascript" src="../_script/admin.js"></script>
+</head>
+<body>
+
+	<div id="container">
+
+		<h1>Welcome Administrator</h1>
+		<div id="body">
+
+			<h2>
+				<a href='userManager'>To User Management</a>
+			</h2>
+			<h2>
+				<a href='editor'>To Exam | Section | Question | Answer Editor</a>
+			</h2>
+			<strong>Note: Javascript must be enabled for this application to run</strong>
+			<h2 id="makerHeader">Create New: Exam, Section, Question, Answer</h2>
+			<div>
+				<code id="maker">
+					<table style="width: 100%">
+						<tr>
+							<td>Create Exam:</td>
+							<td><input type="text" id="newExam" value="Title" /></td>
+							<td><button id="createExam">Create</button></td>
+						</tr>
+						<tr>
+							<td>Create Section:</td>
+							<td><input type="text" id="newSection" value="Title" /></td>
+							<td><button id="createSection">Create</button></td>
+						</tr>
+						<tr>
+							<td>Create Question:</td>
+							<td><textarea id="newQuestion" rows="3" cols="80">Question Text</textarea></td>
+							<td><button id="createQuestion">Create</button></td>
+						</tr>
+						<tr>
+							<td>Create Answer:</td>
+							<td><textarea id="newAnswer" rows="3" cols="80">Answer Text</textarea></td>
+							<td><button id="createAnswer">Create</button></td>
+						</tr>
+					</table>
+					<h3>Refresh page to see new Exams / Sections</h3>
+				</code>
+			</div>
+			<div id="managersContainer">
+				<div id="managers">
+					<h2 id='examSectionManagerHeader'>Exam Manager:</h2>
+					<div>
+						<code id="examSectionManager">
+							<table>
+								<tbody>
+									<tr>
+										<td style="width: 15%">Choose the Exam to edit:</td>
+										<td style="width: 85%"><select id="chosenExam" name="exam"
+											style="width: 100%">
+										<?php echo $examList?>
+									</select></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><button id="loadSections" style="float: right;">Load Exam</button></td>
+									</tr>
+								</tbody>
+							</table>
+							<div id="includedSectionList"
+								style="display: block; overflow: auto">
+								<code class='scrollable' id="includedSections"
+									style="width: 45%; float: left;">
+									<p>
+										<strong>Included Sections:</strong>
+									</p>
+									<ul>
+								<?php if(isset($includedSections)) echo $includedSections?>
+							</ul>
+								</code>
+								<code class='scrollable' id="excludedSections"
+									style="width: 45%; float: right;">
+									<p>
+										<strong>Excluded Sections:</strong>
+									</p>
+									<ul>
+								<?php if(isset($excludedSections)) echo $excludedSections?>
+							</ul>
+								</code>
+							</div>
+						</code>
+					</div>
+
+
+					<h2 id='sectionQuestionManagerHeader'>Section Manager:</h2>
+					<div id="sectionQuestionManagerContainer">
+						<code id="sectionQuestionManager">
+							<table>
+								<tbody>
+									<tr>
+										<td style="width: 15%">Choose the Exam to edit:</td>
+										<td style="width: 85%"><select id="chosenExamToEdit"
+											style="width: 100%">
+										<?php echo $examList?>
+									</select></td>
+									</tr>
+									<tr>
+										<td>Choose the Section to Edit:</td>
+										<td id='chosenSectionToEditContainer'><select
+											id="chosenSectionToEdit" style="width: 100%">
+										<?php if(isset($includedSectionsOptionItems)) {echo $includedSectionsOptionItems; } else echo '';?>
+									</select></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><button id="loadQuestions" style="float: right;">Load
+												Section</button></td>
+									</tr>
+								</tbody>
+							</table>
+							<div id="includedQuestionListContainer">
+								<div id="includedQuestionList"
+									style="display: block; overflow: auto">
+									<code class='scrollable' id="includedQuestions"
+										style="width: 45%; float: left;">
+										<p>
+											<strong>Included Questions:</strong>
+										</p>
+										<ul>
+									<?php if(isset($includedQuestions)) echo $includedQuestions?>
+								</ul>
+									</code>
+									<code class='scrollable' id="excludedQuestions"
+										style="width: 45%; float: right;">
+										<p>
+											<strong>Excluded Questions:</strong>
+										</p>
+										<ul>
+									<?php if(isset($excludedQuestions)) echo $excludedQuestions?>
+								</ul>
+									</code>
+								</div>
+							</div>
+						</code>
+					</div>
+					<h2 id='sectionQuestionIncorrectAnswerManagerHeader'>Question
+						Manager:</h2>
+					<div>
+						<code id="sectionQuestionIncorrectAnswerManager">
+							<table>
+								<tbody>
+									<code>Assign new correct answer BEFORE exlcuding as possible
+										answer</code>
+									<tr>
+										<td style="width: 15%">Choose the section:</td>
+										<td style="width: 85%"><select
+											id="sectionChosenForSectionQuestionIncorrectAnswer"
+											name="section" style="width: 100%">
+										<?php echo $sectionList?>
+									</select></td>
+									</tr>
+									<tr>
+										<td>Choose the question:</td>
+										<td><select
+											id="questionChosenForSectionQuestionIncorrectAnswer"
+											name="question" style="width: 100%">
+										<?php echo $questionList?>
+									</select></td>
+									</tr>
+									<tr>
+										<td></td>
+										<td><button id="loadIncorrectAnswers" style="float: right;">Load
+												question</button></td>
+									</tr>
+								</tbody>
+							</table>
+							<div id="incorrectAnswerList"
+								style="display: block; overflow: auto">
+								<code class='scrollable' id="includedIncorrectAnswers"
+									style="width: 45%; float: left;">
+									<p>
+										<strong>Included Answers:</strong>
+									</p>
+									<ul>
+								<?php if(isset($includedIncorrectAnswers)) echo $includedIncorrectAnswers?>
+							</ul>
+								</code>
+								<code class='scrollable' id="excludedIncorrectAnswers"
+									style="width: 45%; float: right;">
+									<p>
+										<strong>Excluded Incorrect Answers:</strong>
+									</p>
+									<ul>
+								<?php if(isset($excludedIncorrectAnswers)) echo $excludedIncorrectAnswers?>
+							</ul>
+								</code>
+							</div>
+						</code>
+					</div>
+				</div>
+			</div>	
+	<?php echoFooter(); ?>
+</div>
+
+</body>
+</html>

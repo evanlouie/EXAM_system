@@ -1,0 +1,55 @@
+<?php
+session_start();  
+foreach (glob("../_classes/*.php") as $filename) {require "$filename";}
+require "../_functions/functions.php";
+
+$fname = mysql_real_escape_string($_POST['fname']);
+$lname = mysql_real_escape_string($_POST['lname']);
+$email = mysql_real_escape_string($_POST['email']);
+$password = mysql_real_escape_string($_POST['password']);
+
+$user = new user;
+$user->set_email($email);
+$user->set_first_name($fname);
+$user->set_last_name($lname);
+$user->set_password($password);
+if ($user->availableEmail($email)) {
+	$user->saveToDB();
+	$h1 = "User Registration Complete!";
+	$p = "Thank you for registering for the GTLC EXAM System";
+	$code = "<p>Good luck on the test; and may the odds be ever if your favor.</p><a href='../'>Contine to login page</a>";
+
+} else {
+	$h1 = "Registration Error!";
+	$p = "Error Message:";
+	$code = "Email provided not available";
+}
+
+
+$user_id = $user->get_user_id_fromDB($email);
+
+
+?>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>EXAM System</title>
+	<link rel="stylesheet" type="text/css" href="../_css/styles.css"/>
+</head>
+<body>
+
+<div id="container">
+	<h1><?php echo $h1 ?></h1>
+
+	<div id="body">
+		<p><?php echo $p ?></p>
+		<code>
+			<?php echo $code ?>
+		</code>
+	</div>
+
+	<?php echoFooter(); ?>
+</div>
+
+</body>
+</html>

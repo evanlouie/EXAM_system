@@ -1,0 +1,75 @@
+<?php
+foreach (glob("../_classes/*.php") as $filename) {
+	require "$filename";
+}
+session_start();
+if (isset($_SESSION['user_id'])) {
+	$user = new user;
+	$user->getFromDB($_SESSION['user_id']);
+} else if (isset($_POST['email']) && isset($_POST['password'])) {
+	$email = $_POST['email'];
+	$password = $_POST['password'];
+	$user = new user;
+	if ($user->userExists($email)) {
+		$user -> getFromDB($user -> get_user_id_fromDB($email));
+	} else {
+		unset($user);
+	}
+}  
+
+if (isset($user)) {
+	$_SESSION['user_id'] = $user->get_user_id();
+	$attempts = $user->getAllAttemptObjects();
+//	var_dump($user);
+//	var_dump($attempts);
+
+	$h1 = "Welcome " . $user->get_first_name() . ' ' . $user->get_last_name();
+	$p = "Past attempted exams:";
+	if (empty($attempts)) {
+		$code = "No past exams taken";
+	} else {
+		$code = "<table><tbody><tr><td><strong>Attempt ID</strong></td><td><strong>Exam</strong></td><td><strong>Score</strong></td><td><strong>Date</strong></td></tr>";
+		while(!empty($attempts)) {
+			$attempt = array_pop($attempts);
+			$code = $code."<tr><td>$attempt->attempt_id</td><td>$attempt->title</td><td>$attempt->score</td><td>$attempt->timestamp</td></tr>";
+		}
+		$code = $code."</tbody></table>";
+	}
+} else {
+	$h1 = "Login Error!";
+	$p = "Error:";
+	$code = "Password or Email incorrect";
+}
+?>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>EXAM System</title>
+	<link rel="stylesheet" type="text/css" href="../_css/styles.css"/>
+</head>
+<body>
+
+<div id="container">
+	<h1><?php echo $h1 ?></h1>
+
+	<div id="body">
+		<?php if (isset($_SESSION['user_id'])) { ?>
+		<p>May the odds be ever in your favour</p>
+		<code>
+			Select Exam:
+			<select id="exam">
+				<?php echo examList ?>
+			</select>
+		</code>
+		<?php } ?>
+		<p><?php echo $p ?></p>
+		<code>
+			<?php echo $code ?>
+		</code>
+	</div>
+
+	<p class="footer">Design: <a href="http://www.evanlouie.com"><strong>www.evanlouie.com</strong></a></p>
+</div>
+
+</body></html>

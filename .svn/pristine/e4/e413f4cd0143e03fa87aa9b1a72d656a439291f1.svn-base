@@ -1,0 +1,62 @@
+<?php
+
+class exam {
+
+	private $exam_id;
+	private $title;
+
+	function __construct() {
+		mysql_connect("localhost", "root", "") or die(mysql_error());
+		mysql_select_db("exam_system") or die(mysql_error());
+	}
+
+	public function get_exam_id() {
+		return $exam_id;
+	}
+
+	public function set_exam_id($id) {
+		$this -> exam_id = $id;
+		return TRUE;
+	}
+
+	public function get_title() {
+		return $this -> title;
+	}
+
+	public function set_title($title) {
+		$this -> title = $title;
+		return TRUE;
+	}
+
+	public function saveToDB() {
+		if (isset($exam_id)) {
+			die("exam_id is set, object already exists in DB or user illegal operation");
+		} else {
+			$query = "INSERT INTO exam VALUES (NULL, '$this->title')";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+	public function deleteFromDB() {
+		if (!isset($exam_id)) {
+			die("exam_id not set, object does not exist in DB or is not currently referencing object in DB");
+		} else {
+			$query = "DELETE FROM exam WHERE exam_id = '$this->exam_id'";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+	public function updateInDB() {
+		if (!isset($exam_id)) {
+			die("exam_id not set, object does not exist in DB or is not currently referencing object in DB");
+		} else {
+			$query = "UPDATE exam SET title = '$this->title' WHERE exam_id = '$this->exam_id'";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+}
+?>

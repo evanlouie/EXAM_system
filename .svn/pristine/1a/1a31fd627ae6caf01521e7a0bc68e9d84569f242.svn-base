@@ -1,0 +1,52 @@
+<?php
+foreach (glob("../_classes/*.php") as $filename) {
+	require "$filename";
+}
+$email = $_POST['email'];
+$password = $_POST['password'];
+$user = new user;
+$user -> getFromDB($user -> get_user_id_fromDB($email));
+$attempts = $user -> getAllAttemptsAsArray();
+
+var_dump($user);
+var_dump($attempts);
+var_dump($password);
+
+if ($user -> isPasswordRight($password)) {
+	session_start();
+	$_SESSION['user_id'] = $user -> get_user_id();
+	
+	$h1 = "Welcome " . $user->get_first_name() . ' ' . $user->get_last_name();
+	$p = "Past attempted exams:";
+	$code = '';
+
+} else {
+	$h1 = "Login Error!";
+	$p = "Error:";
+	$code = "Password or Email incorrect";
+}
+?>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>EXAM System</title>
+	<link rel="stylesheet" type="text/css" href="../_css/styles.css"/>
+</head>
+<body>
+
+<div id="container">
+	<h1><?php echo $h1 ?></h1>
+
+	<div id="body">
+		<p><?php echo $p ?></p>
+		<code>
+			<?php echo $code ?>
+		</code>
+	</div>
+
+	<p class="footer">Design: <a href="http://www.evanlouie.com"><strong>www.evanlouie.com</strong></a></p>
+</div>
+
+</body>
+</html>

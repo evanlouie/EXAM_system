@@ -1,0 +1,71 @@
+<?php
+foreach ( glob ( "_classes/*.php" ) as $filename ) {
+	require "$filename";
+}
+require "_functions/functions.php";
+
+session_start ();
+if (isset ( $_SESSION ['user_id'] )) {
+	$user_id = $_SESSION ['user_id'];
+	$user = new user ();
+	$user->getFromDB ( $user_id );
+	$code = "Welcome Back " . $user->get_first_name () . "!";
+	$code = $code . " <a href='user/'>Continue to user page</a></br><a href='logout.php'>Not you? click here</a>";
+} else {
+	$code = '
+			Please login:
+			<form method="post" action="user/">
+				<table width="auto">
+					<tr width="auto">
+						<td>Email:</td>
+						<td><input type="text" name="email" value="" size=50></td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td><input type="password" name="password" value="" size=50></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><input style="float:right;" type="submit" value="Go"></td>
+					</tr>
+				</table>
+			</form>
+			First times user? <a href="register/"><strong>Register Now!</strong></a>';
+}
+
+?>
+
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>EXAM System</title>
+<link rel="stylesheet" type="text/css" href="_css/styles.css" />
+
+</head>
+<body>
+
+	<div id="container">
+		<h1>Welcome to The EXAM System</h1>
+
+		<div id="body">
+			<p>Welcome to the GTLC EXAM system.</p>
+
+			<p>For standard user usage, please proceed here:</p>
+			<code><?php echo $code ?></code>
+
+			<p>For System Admin Control, please proceed here:</p>
+			<code>
+				<a href="admin">Admin Control</a>
+			</code>
+
+			<p>
+				If you are using the exam for the very first time, you should start
+				by reading the <a href="user_guide/">User Guide</a>.
+			</p>
+		</div>
+
+	<?php echoFooter() ?>
+</div>
+
+</body>
+</html>

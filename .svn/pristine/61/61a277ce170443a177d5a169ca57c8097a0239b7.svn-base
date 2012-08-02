@@ -1,0 +1,109 @@
+<?php
+
+class section_question_answer_map {
+
+	private $sqam_id;
+	private $section_id;
+	private $question_id;
+	private $answer_id;
+	private $status;
+
+	function __construct() {
+		mysql_connect("localhost", "root", "") or die(mysql_error());
+		mysql_select_db("exam_system") or die(mysql_error());
+	}
+
+	public function getFromDB($sqam_id) {
+		$query = "SELECT * FROM section_question_answer_map WHERE sqam_id = '$sqam_id'";
+		$result = mysql_query($query) or die(mysql_error());
+		while ($obj = mysql_fetch_object($result)) {
+			$this -> answer_id = $obj -> answer_id;
+			$this -> question_id = $obj -> question_id;
+			$this -> section_id = $obj -> section_id;
+			$this -> sqam_id = $obj -> sqam_id;
+			$this -> status = $obj -> status;
+		}
+	}
+
+	public function get_sqam_id() {
+		return $this -> sqam_id;
+	}
+
+	public function set_sqam_id($id) {
+		$this -> sqam_id = $id;
+		return TRUE;
+	}
+
+	public function get_section_id() {
+		return $this -> section_id;
+	}
+
+	public function set_section_id($id) {
+		$this -> section_id = $id;
+		return TRUE;
+	}
+
+	public function get_question_id() {
+		return $this -> question_id;
+	}
+
+	public function set_question_id($id) {
+		$this -> question_id = $id;
+		return TRUE;
+	}
+
+	public function get_answer_id() {
+		return $this -> answer_id;
+	}
+
+	public function set_answer_id($id) {
+		$this -> answer_id = $id;
+		return TRUE;
+	}
+
+	public function get_status() {
+		return $this -> status;
+	}
+
+	public function set_status($status) {
+		if ($status == 1 || $status == 0) {
+			$this -> status = $status;
+			return TRUE;
+		} else
+			return FALSE;
+	}
+
+	public function saveToDatabase() {
+		if (isset($sqam_id)) {
+			die("sqam_id is set; sqam_id is not user defined; object must already exist in DB, or illegal user operation");
+		} else {
+			$query = "INSERT INTO section_question_answer_map VALUES (NULL, '$this->section_id', '$this->question_id', '$this->answer_id', '$this->status')";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+	public function deleteFromDatabase() {
+		if (!isset($sqam_id)) {
+			die("sqam_id not set; object does not exist in DB or not currently referencing active object in DB");
+		} else {
+			$query = "DELETE FROM section_question_answer_map WHERE sqam_id = '$this->sqam_id'";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+	public function updateInDB() {
+		if (!isset($sqam_id)) {
+			die("sqam_id not set; object does not exist in DB or not currently referencing active object in DB");
+		} else {
+			$query = "	UPDATE section_question_answer_map
+SET section_id = '$this->section_id', question_id = '$this->question_id', answer_id = '$this->answer_id', status = '$this->status'
+WHERE sqam_id = '$this->sqam_id'";
+			mysql_query($query) or die(mysql_error());
+			return TRUE;
+		}
+	}
+
+}
+?>

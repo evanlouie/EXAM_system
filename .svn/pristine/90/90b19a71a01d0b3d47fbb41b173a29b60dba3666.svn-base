@@ -1,0 +1,177 @@
+$(document).ready(function() {
+	var exam_id;
+	var section_id;
+	var question_id;
+	var answer_id;
+
+	function reloadSectionList() {
+		exam_id = $('#chosenExam option:selected').val();
+		$('#includedSectionList').load('index.php?exam_id=' + exam_id + ' #includedSectionList');
+	}
+
+	function reloadCorrectAnswerList() {
+		section_id = $("#sectionChosenForSectionQuestionAnswer option:selected").val();
+		question_id = $("#questionChosenForSectionQuestionAnswer option:selected").val();
+		$('#correctAnswerList').load('index.php?sectionQuestionAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #correctAnswerList');
+	}
+
+	function reloadIncorrectAnswerList() {
+		section_id = $("#sectionChosenForSectionQuestionIncorrectAnswer option:selected").val();
+		question_id = $("#questionChosenForSectionQuestionIncorrectAnswer option:selected").val();
+		$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList');
+	}
+
+	function delayReloadIncludedSectionList() {
+		setTimeout(function() {
+			$('#includedSectionList').load('index.php?exam_id=' + exam_id + ' #includedSectionList');
+		}, 200);
+	}
+
+	function delayReloadIncorrectAnswerList() {
+		setTimeout(function() {
+			$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList');
+		}, 200);
+	}
+
+	function delayReloadCorrectAnswerList() {
+		setTimeout(function() {
+			$('#correctAnswerList').load('index.php?sectionQuestionAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #correctAnswerList');
+		}, 200);
+	}
+
+	function delayReloadQuestions() {
+		setTimeout(function() {
+			$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+		}, 200);
+	}
+	
+	$('#loadSections').click(function() {
+		reloadSectionList();
+	});
+	$('#chosenExam').change(function() {
+		reloadSectionList();
+	});
+	$('.excludedSection').live('click', function() {
+		exam_id = $('#chosenExam option:selected').val();
+		section_id = $(this).val();
+		$.get("esmManager.php?create=1&exam_id=" + exam_id + "&section_id=" + section_id);
+		delayReloadIncludedSectionList();
+	});
+	$('.includedSection').live('click', function() {
+		exam_id = $('#chosenExam option:selected').val();
+		section_id = $(this).val();
+		$.get("esmManager.php?delete=1&exam_id=" + exam_id + "&section_id=" + section_id);
+		delayReloadIncludedSectionList();
+	});
+	$('#loadCorrectAnswers').click(function() {
+		reloadCorrectAnswerList();
+	});
+	$('#sectionChosenForSectionQuestionAnswer').live('change', function() {
+		reloadCorrectAnswerList();
+	});
+	$('#questionChosenForSectionQuestionAnswer').live('change', function() {
+		reloadCorrectAnswerList();
+	});
+	$('.incorrectAnswer').live('click', function() {
+		answer_id = $(this).val();
+		$.get("sqamManager.php?edit=1&section_id=" + section_id + "&question_id=" + question_id + "&answer_id=" + answer_id + "&status=1");
+		delayReloadCorrectAnswerList();
+	});
+
+	$('#sectionChosenForSectionQuestionIncorrectAnswer').live('change', function() {
+		reloadIncorrectAnswerList();
+	});
+	$('#questionChosenForSectionQuestionIncorrectAnswer').live('change', function() {
+		reloadIncorrectAnswerList();
+	});
+	$('#loadIncorrectAnswers').click(function() {
+		reloadIncorrectAnswerList();
+	});
+	$('text.includedIncorrectAnswer').live('click', function() {
+		answer_id = $(this).attr('value');
+		$.get('qamManager.php?delete=1&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=' + answer_id);
+		delayReloadIncorrectAnswerList();
+	});
+	$('input[type="radio"].includedIncorrectAnswer').live('click', function() {
+		answer_id = $(this).val();
+		$.get("sqamManager.php?edit=1&section_id=" + section_id + "&question_id=" + question_id + "&answer_id=" + answer_id + "&status=1");
+		delayReloadCorrectAnswerList();
+	});
+	$('.excludedIncorrectAnswer').live('click', function() {
+		answer_id = $(this).val();
+		$.get('qamManager.php?create=1&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=' + answer_id);
+		delayReloadIncorrectAnswerList();
+	});
+	$('#createExam').click(function() {
+		var examTitle = $('#newExam').val();
+		$.get('examManager.php?create=1&title=' + examTitle);
+	});
+	$('#createSection').click(function() {
+		var sectionTitle = $('#newSection').val();
+		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle);
+	});
+	$('#createQuestion').click(function() {
+		var questionText = $('#newQuestion').val();
+		$.get("questionManager.php?create=1&question=" + questionText);
+	});
+	$('#createAnswer').click(function() {
+		var answerText = $('#newAnswer').val();
+		$.get('answerManager.php?create=1&answer=' + answerText);
+	});
+	$('#chosenExamToEdit').live('change', function() {
+		exam_id = $('#chosenExamToEdit option:selected').val();
+		$('#chosenSectionToEditContainer').load('index.php?exam_id=' + exam_id + ' #chosenSectionToEdit');
+		setTimeout(function() {
+			section_id = $('#chosenSectionToEdit option:selected').val();
+			$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+		}, 200);
+	});
+	$('#chosenSectionToEdit').live('change', function() {
+		exam_id = $('#chosenExamToEdit option:selected').val();
+		section_id = $('#chosenSectionToEdit option:selected').val();
+		$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+
+	});
+	$('#loadQuestions').click(function() {
+		exam_id = $('#chosenExamToEdit option:selected').val();
+		section_id = $('#chosenSectionToEdit option:selected').val();
+		$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+	});
+	$('.includedQuestion').live('click', function() {
+		question_id = $(this).val();
+		exam_id = $('#chosenExamToEdit option:selected').val();
+		section_id = $('#chosenSectionToEdit option:selected').val();
+		$.get('sqamManager.php?delete=1&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=1&status=1');
+		$.get('esqamManager.php?delete=1&section_id=' + section_id + '&exam_id=' + exam_id + '&question_id=' + question_id);
+		$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+	});
+	$('.excludedQuestion').live('click', function() {
+		question_id = $(this).val();
+		exam_id = $('#chosenExamToEdit option:selected').val();
+		section_id = $('#chosenSectionToEdit option:selected').val();
+		$.get('sqamManager.php?create=1&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=1&status=1');
+		$.get('esqamManager.php?create=1&section_id=' + section_id + '&exam_id=' + exam_id + '&question_id=' + question_id);
+		$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
+	});
+	$('h2#makerHeader').click(function() {
+		$('code#maker').slideToggle();
+	});
+	$('h2#examSectionManagerHeader').click(function() {
+		$('code#examSectionManager').slideToggle();
+	});
+	$('h2#sectionQuestionManagerHeader').click(function() {
+		$('code#sectionQuestionManager').slideToggle();
+	});
+	$('h2#sectionQuestionAnswerManagerHeader').click(function() {
+		$('code#sectionQuestionAnswerManager').slideToggle();
+	});
+	$('h2#sectionQuestionIncorrectAnswerManagerHeader').click(function() {
+		$('code#sectionQuestionIncorrectAnswerManager').slideToggle();
+	});
+	$('code#maker').hide();
+	$('code#examSectionManager').hide();
+	$('code#sectionQuestionManager').hide();
+	$('code#sectionQuestionAnswerManager').hide();
+	$('code#sectionQuestionIncorrectAnswerManager').hide();
+
+});
