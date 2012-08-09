@@ -60,7 +60,7 @@ if (isset ( $_SESSION ['user_id'] )) {
 
 			<p>
 				If you are using the exam for the very first time, you should start
-				by reading the <a href="user_guide/">User Guide</a>.
+				by reading the <a href="The Exam System - User Guide.pptx">User Guide</a>.
 			</p>
 		</div>
 
