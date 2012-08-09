@@ -75,8 +75,7 @@ $html .= "<code><button id='submitExam' style='float:right; width:25%'>Submit Ex
 	<body>
 
 		<div id="container">
-			<h1><?php echo $h1 ?><
-			hidden examid="<?php echo $exam_id ?>"></hidden></h1>
+			<h1><?php echo $h1 ?><hidden examid="<?php echo $exam_id ?>"></hidden></h1>
 			<div id="body">
 				<p>
 					<strong>Instructions:</strong>
