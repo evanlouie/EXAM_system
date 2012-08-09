@@ -6,12 +6,12 @@ require "../_functions/functions.php";
 
 session_start();
 if (!isset($_SESSION['user_id'])) {
-	header( "refresh:2;url=/exam_system/" );
+	header("refresh:2;url=/exam_system/");
 	echo "User not logged in, please login and make sure cookies are enabled. You will be redirected in 2 seconds, <a href='/exam_system/'>click here if not</a>";
 }
 $admin = new admin();
 if (!$admin -> isAdmin($_SESSION['user_id'])) {
-	header( "refresh:2;url=/exam_system/" );
+	header("refresh:2;url=/exam_system/");
 	echo "You do not have admin rights. You will be redirected in 2 seconds, <a href='/exam_system/'>Click here if not redirected</a>";
 }
 $exam = new exam();
@@ -254,6 +254,30 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 						<h2 id='examSectionManagerHeader'>Exam Manager:</h2>
 						<div id='examManagerContainer'>
 							<code id="examSectionManager">
+								<table style='width:100%'>
+									<tbody>
+										<tr>
+											<td style='width:15%'>Create Exam:</td>
+											<td style='width:75%'>
+											<input type="text" id="newExamManager" value="Title" style='width:100%'/>
+											</td>
+											<td>
+											<button id="createExamManager" style='float:right'>
+												Create
+											</button></td>
+										</tr>
+										<tr>
+											<td style='width:15%'>Create Section:</td>
+											<td style='width:75%'>
+											<input type="text" id="newSectionInExamManager" value="Title" style='width:100%'/>
+											</td>
+											<td>
+											<button id="createSectionInExamManager" style='float:right'>
+												Create
+											</button></td>
+										</tr>
+									</tbody>
+								</table>
 								<table>
 									<tbody>
 										<tr>
@@ -308,6 +332,20 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 
 							<div id="sectionQuestionManagerContainer">
 								<code id="sectionQuestionManager">
+									<table style='width:100%'>
+										<tbody>
+											<tr>
+												<td style='width:15%'>Create Question:</td>
+												<td style='width:75%'>
+												<input type="text" id="newQuestionInSectionManager" value="Title" style='width:100%'/>
+												</td>
+												<td>
+												<button id="createQuestionInSectionManager" style='float:right'>
+													Create
+												</button></td>
+											</tr>
+										</tbody>
+									</table>
 									<table>
 										<tbody>
 											<tr>
@@ -377,12 +415,23 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 						Manager:</h2>
 						<div id='questionManager'>
 							<code id="sectionQuestionIncorrectAnswerManager">
+								<table style='width:100%'>
+									<tbody>
+										<tr>
+											<td style='width:15%'>Create Answer:</td>
+											<td style='width:75%'>
+											<input type="text" id="newAnswerInQuestionManager" value="Title" style='width:100%'/>
+											</td>
+											<td>
+											<button id="createAnswerInQuestionManager" style='float:right'>
+												Create
+											</button></td>
+										</tr>
+									</tbody>
+								</table>
 								<table>
 									<tbody>
-										<code>
-											Assign new correct answer BEFORE exlcuding as possible
-											answer
-										</code>
+
 										<tr>
 											<td style="width: 15%">Choose the section:</td>
 											<td style="width: 85%" id='sectionChosenForSectionQuestionIncorrectAnswerContainer'>
@@ -431,8 +480,6 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 									style="width: 45%; float: right;">
 										<p>
 											<strong>Excluded Incorrect Answers:</strong>
-											<strong>Excluded Incorrect Answers:</strong>
-											<strong>Excluded Incorrect Answers:</strong>
 										</p>
 										<table>
 											<tbody>
@@ -456,12 +503,12 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 			<h2 id='lightboxHeader'>Lightbox Panel</h2>
 			<div id='lightboxContent'></div>
 			<p align="center">
-				<a id="close-panel" href="#">Complete Editing</a>
+				<a class="close-panel" href="#">Complete Editing</a>
 			</p>
 		</div>
 		<!-- /lightbox-panel -->
 
-		<div id="lightbox"></div>
+		<div class='close-panel' id="lightbox"></div>
 		<!-- /lightbox -->
 	</body>
 </html>

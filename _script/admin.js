@@ -8,9 +8,11 @@ $(document).ready(function() {
 		$('#chosenExamContainer').load('index.php #chosenExam');
 		$('#chosenExamToEditContainer').load('index.php #chosenExamToEdit');
 	}
+
 	function reloadSectionSelects() {
 		$('#sectionChosenForSectionQuestionIncorrectAnswerContainer').load('index.php #sectionChosenForSectionQuestionIncorrectAnswer');
 	}
+
 	function reloadSectionList() {
 		exam_id = $('#chosenExam option:selected').val();
 		$('#includedSectionList').load('index.php?exam_id=' + exam_id + ' #includedSectionList', function() {
@@ -212,6 +214,21 @@ $(document).ready(function() {
 			alert('Exam Created');
 		});
 	});
+	$(document).on('click', '#createExamManager', function() {
+		var examTitle = $('#newExamManager').attr('value');
+		$.get('examManager.php?create=1&title=' + examTitle, function() {
+			reloadExamSelects();
+			alert('Exam Created');
+		});
+	})
+	$(document).on('click', '#createSectionInExamManager', function() {
+		var sectionTitle = $('#newSectionInExamManager').attr('value');
+		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle, function() {
+			reloadSectionSelects();
+			reloadSectionList();
+			alert('Section Created');
+		});
+	})
 	$('#createSection').click(function() {
 		var sectionTitle = $('#newSection').attr('value');
 		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle, function() {
@@ -219,12 +236,31 @@ $(document).ready(function() {
 			alert('Section Created');
 		});
 	});
+	$(document).on('click', '#createQuestionInSectionManager', function() {
+		var questionTitle = $('#newQuestionInSectionManager').attr('value');
+		$.get("questionManager.php?create=1&question=" + questionTitle, function() {
+
+			alert('Question Created');
+			exam_id = $('#chosenExamToEdit option:selected').attr('value');
+			$('#chosenSectionToEditContainer').load('index.php?exam_id=' + exam_id + ' #chosenSectionToEdit', function() {
+				section_id = $('#chosenSectionToEdit option:selected').attr('value');
+				reloadQuestionList(exam_id, section_id);
+			});
+		});
+	})
 	$('#createQuestion').click(function() {
 		var questionText = $('#newQuestion').attr('value');
 		$.get("questionManager.php?create=1&question=" + questionText, function() {
 			alert('Question Created');
 		});
 	});
+	$(document).on('click', '#createAnswerInQuestionManager', function() {
+		var answerText = $('#newAnswerInQuestionManager').attr('value');
+		$.get('answerManager.php?create=1&answer=' + answerText, function() {
+			alert('Answer Created');
+			reloadIncorrectAnswerList();
+		});
+	})
 	$('#createAnswer').click(function() {
 		var answerText = $('#newAnswer').attr('value');
 		$.get('answerManager.php?create=1&answer=' + answerText, function() {
@@ -343,7 +379,7 @@ $(document).ready(function() {
 	$("a#show-panel").click(function() {
 		$("#lightbox, #lightbox-panel").fadeIn(300);
 	});
-	$("a#close-panel").click(function() {
+	$(".close-panel").click(function() {
 		$("#lightbox, #lightbox-panel").fadeOut(300);
 		$('#sectionQuestionManager').appendTo('#sectionManager');
 		$('#sectionQuestionManager').hide();
