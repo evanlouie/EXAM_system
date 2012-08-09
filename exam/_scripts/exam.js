@@ -58,6 +58,9 @@ $(document).ready(function() {
 		firstQuestion = $(this).closest('.section').find('.question').first();
 		answerQuestion(0, size, firstQuestion);
 		$(this).closest('.section').find(':radio').attr('disabled', true);
+		if ($('.answerButton:enabled').length == 0) {
+			$('#submitExam').removeAttr('disabled')
+		}
 	});
 	$('#submitExam').click(function() {
 		var attempt_id = $('#attempt_id').text();
@@ -85,4 +88,5 @@ $(document).ready(function() {
 	numOfSections = --$('.section').length;
 	current = 0;
 	$('.section').eq(current).show();
+	$('#submitExam').attr('disabled', 'disabled');
 });
