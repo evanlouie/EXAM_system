@@ -256,9 +256,8 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 									<tbody>
 										<tr>
 											<td style="width: 15%">Choose the Exam to edit:</td>
-											<td style="width: 85%">
-											<select id="chosenExam" name="exam"
-											style="width: 100%">
+											<td style="width: 85%" id='chosenExamContainer'>
+											<select id="chosenExam" name="exam"	style="width: 100%">
 												<?php echo $examList
 												?>
 											</select></td>
@@ -311,9 +310,8 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										<tbody>
 											<tr>
 												<td style="width: 15%">Choose the Exam to edit:</td>
-												<td style="width: 85%">
-												<select id="chosenExamToEdit"
-												style="width: 100%">
+												<td style="width: 85%" id='chosenExamToEditContainer'>
+												<select id="chosenExamToEdit" style="width: 100%">
 													<?php echo $examList
 													?>
 												</select></td>
@@ -385,7 +383,7 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										</code>
 										<tr>
 											<td style="width: 15%">Choose the section:</td>
-											<td style="width: 85%">
+											<td style="width: 85%" id='sectionChosenForSectionQuestionIncorrectAnswerContainer'>
 											<select
 											id="sectionChosenForSectionQuestionIncorrectAnswer"
 											name="section" style="width: 100%">

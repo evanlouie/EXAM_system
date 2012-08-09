@@ -4,6 +4,13 @@ $(document).ready(function() {
 	var question_id;
 	var answer_id;
 
+	function reloadExamSelects() {
+		$('#chosenExamContainer').load('index.php #chosenExam');
+		$('#chosenExamToEditContainer').load('index.php #chosenExamToEdit');
+	}
+	function reloadSectionSelects() {
+		$('#sectionChosenForSectionQuestionIncorrectAnswerContainer').load('index.php #sectionChosenForSectionQuestionIncorrectAnswer');
+	}
 	function reloadSectionList() {
 		exam_id = $('#chosenExam option:selected').val();
 		$('#includedSectionList').load('index.php?exam_id=' + exam_id + ' #includedSectionList', function() {
@@ -137,9 +144,9 @@ $(document).ready(function() {
 	$('#loadSections').click(function() {
 		reloadSectionList();
 	});
-	$('#chosenExam').change(function() {
+	$(document).on('change', '#chosenExam', function() {
 		reloadSectionList();
-	});
+	})
 	$(document).on('click', '.excludedSection', function() {
 		exam_id = $('#chosenExam option:selected').attr('value');
 		section_id = $(this).attr('value');
@@ -200,19 +207,29 @@ $(document).ready(function() {
 	});
 	$('#createExam').click(function() {
 		var examTitle = $('#newExam').attr('value');
-		$.get('examManager.php?create=1&title=' + examTitle);
+		$.get('examManager.php?create=1&title=' + examTitle, function() {
+			reloadExamSelects();
+			alert('Exam Created');
+		});
 	});
 	$('#createSection').click(function() {
 		var sectionTitle = $('#newSection').attr('value');
-		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle);
+		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle, function() {
+			reloadSectionSelects();
+			alert('Section Created');
+		});
 	});
 	$('#createQuestion').click(function() {
 		var questionText = $('#newQuestion').attr('value');
-		$.get("questionManager.php?create=1&question=" + questionText);
+		$.get("questionManager.php?create=1&question=" + questionText, function() {
+			alert('Question Created');
+		});
 	});
 	$('#createAnswer').click(function() {
 		var answerText = $('#newAnswer').attr('value');
-		$.get('answerManager.php?create=1&answer=' + answerText);
+		$.get('answerManager.php?create=1&answer=' + answerText, function() {
+			alert('Answer Created');
+		});
 	});
 	$(document).on('change', '#chosenExamToEdit', function() {
 		exam_id = $('#chosenExamToEdit option:selected').attr('value');
