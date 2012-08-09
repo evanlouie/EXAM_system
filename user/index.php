@@ -7,40 +7,40 @@ require "../_functions/functions.php";
 session_start();
 if (isset($_SESSION['user_id'])) {
 	$user = new user;
-	$user->getFromDB($_SESSION['user_id']);
+	$user -> getFromDB($_SESSION['user_id']);
 } else if (isset($_POST['email']) && isset($_POST['password'])) {
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 	$user = new user;
-	if ($user->userExists($email)) {
+	if ($user -> userExists($email)) {
 		$user -> getFromDB($user -> get_user_id_fromDB($email));
 	} else {
 		unset($user);
 	}
-}  
+}
 
 if (isset($user)) {
-	$_SESSION['user_id'] = $user->get_user_id();
-	$attempts = $user->getAllAttemptObjects();
+	$_SESSION['user_id'] = $user -> get_user_id();
+	$attempts = $user -> getAllAttemptObjects();
 	$exam = new exam;
-	$examArray = $exam->getListOfAllExamsAsObjectArray();
+	$examArray = $exam -> getListOfAllExamsAsObjectArray();
 	$examList = '';
-	while(!empty($examArray)) {
+	while (!empty($examArray)) {
 		$e = array_pop($examArray);
 		$examList .= "<option value='$e->exam_id'>$e->title</option>";
 	}
 
-	$h1 = "Welcome " . $user->get_first_name() . ' ' . $user->get_last_name();
+	$h1 = "Welcome " . $user -> get_first_name() . ' ' . $user -> get_last_name();
 	$p = "Past attempted exams:";
 	if (empty($attempts)) {
 		$code = "No past exams taken";
 	} else {
 		$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Attempt ID</strong></td><td style='width:40%'><strong>Exam</strong></td><td><strong>Score</strong></td><td><strong>Date</strong></td></tr>";
-		while(!empty($attempts)) {
+		while (!empty($attempts)) {
 			$attempt = array_pop($attempts);
-			$code = $code."<tr><td><a href='../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td><td>$attempt->title</td><td>$attempt->score / $attempt->out_of</td><td>$attempt->timestamp</td></tr>";
+			$code = $code . "<tr><td><a href='../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td><td>$attempt->title</td><td>$attempt->score /" . $exam -> getOutOfScore($attempt -> exam_id) . "</td><td>$attempt->timestamp</td></tr>";
 		}
-		$code = $code."</tbody></table>";
+		$code = $code . "</tbody></table>";
 	}
 } else {
 	$h1 = "Login Error!";

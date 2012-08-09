@@ -6,11 +6,13 @@ require "../_functions/functions.php";
 
 session_start();
 if (!isset($_SESSION['user_id'])) {
-	die("User ID not set, make sure you are logged in and cookies are enabled");
+	header( "refresh:2;url=/exam_system/" );
+	echo "User not logged in, please login and make sure cookies are enabled. You will be redirected in 2 seconds, <a href='/exam_system/'>click here if not</a>";
 }
 $admin = new admin();
 if (!$admin -> isAdmin($_SESSION['user_id'])) {
-	die("User does not have admin rights");
+	header( "refresh:2;url=/exam_system/" );
+	echo "You do not have admin rights. You will be redirected in 2 seconds, <a href='/exam_system/'>Click here if not redirected</a>";
 }
 $exam = new exam();
 $examObjectArray = $exam -> getListOfAllExamsAsObjectArray();
@@ -199,9 +201,9 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 
 			<h1>Welcome Administrator</h1>
 			<div id="body">
-
-				<h2><a href='userManager'>To User Management</a></h2>
-				<h2><a href='editor'>To Exam | Section | Question | Answer Editor</a></h2>
+				<code><a href='../user'>To Standard User Panel</a></code>
+				<code><a href='userManager'>To User Management</a></code>
+				<code><a href='editor'>To Exam | Section | Question | Answer Editor</a></code>
 				<strong>Note: Javascript must be enabled for this application to run</strong>
 				<h2 id="makerHeader">Create New: Exam, Section, Question, Answer</h2>
 				<div>
@@ -428,6 +430,8 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 									<code class='scrollable' id="excludedIncorrectAnswers"
 									style="width: 45%; float: right;">
 										<p>
+											<strong>Excluded Incorrect Answers:</strong>
+											<strong>Excluded Incorrect Answers:</strong>
 											<strong>Excluded Incorrect Answers:</strong>
 										</p>
 										<table>

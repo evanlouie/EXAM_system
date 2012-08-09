@@ -45,7 +45,31 @@ if (isset ( $_GET ['user_id'] ) && isset ( $_GET ['loadAttempts'] )) {
 	$attempts = $user->getAllAttemptObjects ();
 	if (empty ( $attempts )) {
 		$code = "No past exams taken";
-	} else {
+	// } else {
+		// $code = "	<table style='width:100%'>
+					// <tbody>
+						// <tr>
+							// <td style='width:10%'><strong>Attempt ID</strong></td>
+							// <td style='width:40%'><strong>Exam</strong></td>
+							// <td><strong>Score</strong></td>
+							// <td><strong>Out Of</strong></td>
+							// <td><strong>Date</strong></td>
+							// <td><strong>Update</strong></td>
+						// </tr>";
+		// while ( ! empty ( $attempts ) ) {
+			// $attempt = array_pop ( $attempts );
+			// $code = $code . "	<tr id='$attempt->attempt_id'>
+								// <td class='attempt_id'><a href='../../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td>
+								// <td class='exam_title'>$attempt->title</td>
+								// <td><input size=1 type='text' class='score' value=$attempt->score /></td>
+								// <td><input size=1 type='text' class='outOf' value='" . $exam->getOutOfScore ( $attempt->exam_id ) . "'/></td>
+								// <td class='timestamp'>$attempt->timestamp</td>
+								// <td><button class='updateAttempt'>Update</button></td>
+							// </tr>";
+		// }
+		// $code = $code . "</tbody></table>";
+	// }
+		} else {
 		$code = "	<table style='width:100%'>
 					<tbody>
 						<tr>
@@ -54,17 +78,15 @@ if (isset ( $_GET ['user_id'] ) && isset ( $_GET ['loadAttempts'] )) {
 							<td><strong>Score</strong></td>
 							<td><strong>Out Of</strong></td>
 							<td><strong>Date</strong></td>
-							<td><strong>Update</strong></td>
 						</tr>";
 		while ( ! empty ( $attempts ) ) {
 			$attempt = array_pop ( $attempts );
 			$code = $code . "	<tr id='$attempt->attempt_id'>
-								<td class='attempt_id'><a href='../../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td>
+								<td class='attempt_id'><a href='../../attempt?attempt_id=$attempt->attempt_id' target='_blank'>$attempt->attempt_id</a></td>
 								<td class='exam_title'>$attempt->title</td>
-								<td><input size=1 type='text' class='score' value=$attempt->score /></td>
-								<td><input size=1 type='text' class='outOf' value='" . $exam->getOutOfScore ( $attempt->exam_id ) . "'/></td>
+								<td class='score'>$attempt->score</td>
+								<td class='outOf'>" . $exam->getOutOfScore ( $attempt->exam_id ) . "</td>
 								<td class='timestamp'>$attempt->timestamp</td>
-								<td><button class='updateAttempt'>Update</button></td>
 							</tr>";
 		}
 		$code = $code . "</tbody></table>";

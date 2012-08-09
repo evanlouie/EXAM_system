@@ -48,6 +48,10 @@ $(document).ready(function() {
 	$('button').click(function() {
 		var input = this;
 		input.disabled = true;
+		$('.section').eq(current).slideToggle();
+		if (current < numOfSections) {
+			$('.section').eq(++current).slideToggle();
+		}		
 	});
 	$('.answerButton').click(function() {
 		size = $(this).closest('.section').find('code.question').first().nextUntil('button').length;
@@ -74,5 +78,11 @@ $(document).ready(function() {
 		$.get('_callbacks/attempt.php?attempt_id=' + attempt_id + '&outOf=' + length);
 		$.get('_callbacks/aemManager.php?create&attempt_id=' + attempt_id + '&exam_id=' + exam_id);
 		var questionList = $('code.question');
+		$('.section').show();
+		
 	});
+	$('.section').hide();
+	numOfSections = --$('.section').length;
+	current = 0;
+	$('.section').eq(current).show();
 });
