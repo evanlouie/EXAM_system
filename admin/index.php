@@ -291,9 +291,9 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										<tr>
 											<td></td>
 											<td>
-											<button id="loadSections" style="float: right;">
+<!-- 											<button id="loadSections" style="float: right;">
 												Load Exam
-											</button></td>
+											</button> --></td>
 										</tr>
 									</tbody>
 								</table>
@@ -337,7 +337,7 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 											<tr>
 												<td style='width:15%'>Create Question:</td>
 												<td style='width:75%'>
-												<input type="text" id="newQuestionInSectionManager" value="Title" style='width:100%'/>
+												<input type="text" id="newQuestionInSectionManager" value="Question Text" style='width:100%'/>
 												</td>
 												<td>
 												<button id="createQuestionInSectionManager" style='float:right'>
@@ -371,10 +371,10 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 											<tr>
 												<td></td>
 												<td>
-												<button id="loadQuestions" style="float: right;">
+<!-- 												<button id="loadQuestions" style="float: right;">
 													Load
 													Section
-												</button></td>
+												</button> --></td>
 											</tr>
 										</tbody>
 									</table>
@@ -420,7 +420,7 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										<tr>
 											<td style='width:15%'>Create Answer:</td>
 											<td style='width:75%'>
-											<input type="text" id="newAnswerInQuestionManager" value="Title" style='width:100%'/>
+											<input type="text" id="newAnswerInQuestionManager" value="Answer Text" style='width:100%'/>
 											</td>
 											<td>
 											<button id="createAnswerInQuestionManager" style='float:right'>
@@ -455,10 +455,10 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										<tr>
 											<td></td>
 											<td>
-											<button id="loadIncorrectAnswers" style="float: right;">
+<!-- 											<button id="loadIncorrectAnswers" style="float: right;">
 												Load
 												question
-											</button></td>
+											</button> --></td>
 										</tr>
 									</tbody>
 								</table>

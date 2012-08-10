@@ -17,7 +17,7 @@ if ($user->availableEmail($email)) {
 	$user->saveToDB();
 	$h1 = "User Registration Complete!";
 	$p = "Thank you for registering for the GTLC EXAM System";
-	$code = "<p>Good luck on the test; and may the odds be ever if your favor.</p><a href='../'>Contine to login page</a>";
+	$code = "<p>Good luck on the test; and may the odds be ever in your favor.</p><a href='../'>Contine to login page</a>";
 
 } else {
 	$h1 = "Registration Error!";

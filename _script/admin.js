@@ -207,10 +207,51 @@ $(document).ready(function() {
 			$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList');
 		});
 	});
-	$('#createExam').click(function() {
+	$('#newExam').focus(function() {
+		if ($('#newExam').attr('value') == "Title") {
+			$('#newExam').attr('value', '');
+		}
+	})
+	$('#newExamManager').focus(function() {
+		if ($('#newExamManager').attr('value') == "Title") {
+			$('#newExamManager').attr('value', '');
+		}
+	})
+	$('#newSection').focus(function() {
+		if ($('#newSection').attr('value') == "Title") {
+			$('#newSection').attr('value', '');
+		}
+	})
+	$('#newSectionInExamManager').focus(function() {
+		if ($('#newSectionInExamManager').attr('value') == "Title") {
+			$('#newSectionInExamManager').attr('value', '');
+		}
+	})
+	$('#newQuestion').focus(function() {
+		if ($('#newQuestion').attr('value') == "Question Text") {
+			$('#newQuestion').attr('value', '');
+		}
+	})
+	$('#newQuestionInSectionManager').focus(function() {
+		if ($('#newQuestionInSectionManager').attr('value') == "Question Text") {
+			$('#newQuestionInSectionManager').attr('value', '');
+		}
+	})
+	$('#newAnswer').focus(function() {
+		if ($('#newAnswer').attr('value') == "Answer Text") {
+			$('#newAnswer').attr('value', '');
+		}
+	})
+	$('#newAnswerInQuestionManager').focus(function() {
+		if ($('#newAnswerInQuestionManager').attr('value') == "Answer Text") {
+			$('#newAnswerInQuestionManager').attr('value', '');
+		}
+	})
+	$('#createExam').focus(function() {
 		var examTitle = $('#newExam').attr('value');
 		$.get('examManager.php?create=1&title=' + examTitle, function() {
 			reloadExamSelects();
+			$('#newExam').attr('value', 'Title');
 			alert('Exam Created');
 		});
 	});
@@ -218,6 +259,7 @@ $(document).ready(function() {
 		var examTitle = $('#newExamManager').attr('value');
 		$.get('examManager.php?create=1&title=' + examTitle, function() {
 			reloadExamSelects();
+			$('#newExamManager').attr('value', 'Title');
 			alert('Exam Created');
 		});
 	})
@@ -226,6 +268,7 @@ $(document).ready(function() {
 		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle, function() {
 			reloadSectionSelects();
 			reloadSectionList();
+			$('#newSectionInExamManager').attr('value', 'Title');
 			alert('Section Created');
 		});
 	})
@@ -233,37 +276,42 @@ $(document).ready(function() {
 		var sectionTitle = $('#newSection').attr('value');
 		$.get('sectionManager.php?create=1&status=1&title=' + sectionTitle, function() {
 			reloadSectionSelects();
+			$('#newSection').attr('value', 'Title');
 			alert('Section Created');
 		});
 	});
 	$(document).on('click', '#createQuestionInSectionManager', function() {
 		var questionTitle = $('#newQuestionInSectionManager').attr('value');
 		$.get("questionManager.php?create=1&question=" + questionTitle, function() {
-
-			alert('Question Created');
 			exam_id = $('#chosenExamToEdit option:selected').attr('value');
 			$('#chosenSectionToEditContainer').load('index.php?exam_id=' + exam_id + ' #chosenSectionToEdit', function() {
 				section_id = $('#chosenSectionToEdit option:selected').attr('value');
 				reloadQuestionList(exam_id, section_id);
 			});
+			$('#newQuestionInSectionManager').attr('value', 'Question Text');
+			alert('Question Created');
 		});
 	})
 	$('#createQuestion').click(function() {
 		var questionText = $('#newQuestion').attr('value');
 		$.get("questionManager.php?create=1&question=" + questionText, function() {
+			$('#newQuestion').attr('value', 'Question Text');
 			alert('Question Created');
 		});
 	});
 	$(document).on('click', '#createAnswerInQuestionManager', function() {
 		var answerText = $('#newAnswerInQuestionManager').attr('value');
 		$.get('answerManager.php?create=1&answer=' + answerText, function() {
-			alert('Answer Created');
+			
 			reloadIncorrectAnswerList();
+			$('#newAnswerInQuestionManager').attr('value', 'Answer Text');
+			alert('Answer Created');
 		});
 	})
 	$('#createAnswer').click(function() {
 		var answerText = $('#newAnswer').attr('value');
 		$.get('answerManager.php?create=1&answer=' + answerText, function() {
+			$('#newAnswer').attr('value', "Answer Text");
 			alert('Answer Created');
 		});
 	});
