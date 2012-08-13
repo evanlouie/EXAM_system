@@ -7,7 +7,7 @@ require "../_functions/functions.php";
 session_start();
 if (!isset($_SESSION['user_id'])) {
 	header("refresh:2;url=/exam_system/");
-	echo "User not logged in, please login and make sure cookies are enabled. You will be redirected in 2 seconds, <a href='/exam_system/'>click here if not</a>";
+	die("User not logged in, please login and make sure cookies are enabled. You will be redirected in 2 seconds, <a href='/exam_system/'>click here if not</a>");
 }
 $admin = new admin();
 if (!$admin -> isAdmin($_SESSION['user_id'])) {
