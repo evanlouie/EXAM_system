@@ -1,6 +1,6 @@
 <?php
 
-class user {
+class user extends master {
 
 	public $user_id;
 	private $first_name;
@@ -8,10 +8,6 @@ class user {
 	private $email;
 	private $password;
 
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($user_id) {
 		$user_id = mysql_real_escape_string($user_id);

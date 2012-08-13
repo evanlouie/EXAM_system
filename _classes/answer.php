@@ -1,14 +1,9 @@
 <?php
 
-class answer {
+class answer extends master {
 
 	public $answer_id;
 	public $answer;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($answer_id) {
 		$answer_id = mysql_real_escape_string($answer_id);

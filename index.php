@@ -2,6 +2,7 @@
 foreach ( glob ( "_classes/*.php" ) as $filename ) {
 	require "$filename";
 }
+
 require "_functions/functions.php";
 
 session_start ();

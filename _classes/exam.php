@@ -1,14 +1,9 @@
 <?php
 
-class exam {
+class exam extends master {
 
 	public $exam_id;
 	public $title;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($exam_id) {
 		$query = "SELECT * FROM exam WHERE exam_id = '$exam_id'";

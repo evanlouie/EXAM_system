@@ -1,12 +1,11 @@
 <?php
 
-class admin {
+class admin extends master {
 
 	private $user_id;
 
 	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
+		parent::__construct();
 	}
 
 	public function set_user_id($user_id) {

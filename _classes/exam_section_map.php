@@ -1,14 +1,9 @@
 <?php
 
-class exam_section_map {
+class exam_section_map extends master {
 
 	private $exam_id;
 	private $section_id;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function get_exam_id() {
 		return $this -> exam_id;

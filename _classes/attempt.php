@@ -1,5 +1,5 @@
 <?php
-class attempt {
+class attempt extends master {
 
 	public $attempt_id;
 	public $user_id;
@@ -7,11 +7,6 @@ class attempt {
 	public $timestamp;
 	public $status = 0;
 	public $outOf = 0;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($attempt_id) {
 		$attempt_id = mysql_real_escape_string($attempt_id);

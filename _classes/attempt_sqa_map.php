@@ -1,15 +1,10 @@
 <?php
 
-class attempt_sqa_map {
+class attempt_sqa_map extends master {
 
 	public $attempt_id;
 	public $sqam_id;
 	public $answer_id;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function get_attempt_id() {
 		return $this -> attempt_id;

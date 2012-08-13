@@ -1,6 +1,6 @@
 <?php
 
-class section_question_answer_map {
+class section_question_answer_map extends master {
 
 	public $sqam_id;
 	public $section_id;
@@ -8,10 +8,6 @@ class section_question_answer_map {
 	public $answer_id = NULL;
 	public $status;
 
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($sqam_id) {
 		$sqam_id = mysql_real_escape_string($sqam_id);

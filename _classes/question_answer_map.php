@@ -1,14 +1,9 @@
 <?php
 
-class question_answer_map {
+class question_answer_map extends master {
 
 	private $sqam_id;
 	private $answer_id;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function get_sqam_id() {
 		return $this -> sqam_id;

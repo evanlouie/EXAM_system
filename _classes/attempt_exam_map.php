@@ -1,14 +1,9 @@
 <?php
 
-class attempt_exam_map {
+class attempt_exam_map extends master {
 
 	public $attempt_id;
 	public $exam_id;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function get_attempt_id() {
 		return $this -> attempt_id;

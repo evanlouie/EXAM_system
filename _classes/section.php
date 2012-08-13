@@ -1,15 +1,10 @@
 <?php
 
-class section {
+class section extends master {
 
 	public $section_id;
 	public $title;
 	public $status;
-
-	function __construct() {
-		mysql_connect("localhost", "root", "") or die(mysql_error());
-		mysql_select_db("exam_system") or die(mysql_error());
-	}
 
 	public function getFromDB($section_id) {
 		$section_id = mysql_real_escape_string($section_id);
