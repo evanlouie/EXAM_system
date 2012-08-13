@@ -14,6 +14,7 @@ class section_question_answer_map {
 	}
 
 	public function getFromDB($sqam_id) {
+		$sqam_id = mysql_real_escape_string($sqam_id);
 		$query = "SELECT * FROM section_question_answer_map WHERE sqam_id = '$sqam_id'";
 		$result = mysql_query($query) or die(mysql_error());
 		if(mysql_num_rows($result)>0) {
@@ -36,6 +37,7 @@ class section_question_answer_map {
 	}
 
 	public function set_sqam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> sqam_id = $id;
 		return TRUE;
 	}
@@ -45,6 +47,7 @@ class section_question_answer_map {
 	}
 
 	public function set_section_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> section_id = $id;
 		return TRUE;
 	}
@@ -54,6 +57,7 @@ class section_question_answer_map {
 	}
 
 	public function set_question_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> question_id = $id;
 		return TRUE;
 	}
@@ -63,6 +67,7 @@ class section_question_answer_map {
 	}
 
 	public function set_answer_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> answer_id = $id;
 		return TRUE;
 	}
@@ -72,6 +77,7 @@ class section_question_answer_map {
 	}
 
 	public function set_status($status) {
+		$status = mysql_real_escape_string($status);
 		if ($status == 1 || $status == 0) {
 			$this -> status = $status;
 			return TRUE;
@@ -120,6 +126,8 @@ class section_question_answer_map {
 	}
 
 	public function get_sqam_id_from_section_and_question($section_id, $question_id) {
+		$section_id = mysql_real_escape_string($section_id);
+		$question_id = mysql_real_escape_string($question_id);
 		$query = "SELECT * FROM section_question_answer_map WHERE section_id = '$section_id' AND question_id = '$question_id'";
 		$result = mysql_query($query) or die(mysql_error());
 		$sqam_id = -1;

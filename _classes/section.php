@@ -12,6 +12,7 @@ class section {
 	}
 
 	public function getFromDB($section_id) {
+		$section_id = mysql_real_escape_string($section_id);
 		$query = "SELECT * FROM section WHERE section_id = '$section_id'";
 		$result = mysql_query($query);
 		while ($section = mysql_fetch_object($result)) {
@@ -26,6 +27,7 @@ class section {
 	}
 
 	public function set_section_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> section_id = $id;
 		return TRUE;
 	}
@@ -35,6 +37,7 @@ class section {
 	}
 
 	public function set_title($title) {
+		$title = mysql_real_escape_string($title);
 		$this -> title = $title;
 		return TRUE;
 	}
@@ -44,6 +47,7 @@ class section {
 	}
 
 	public function set_status($status) {
+		$status = mysql_real_escape_string($status);
 		if ($status == 0 || $status == 1) {
 			$this -> status = $status;
 			return TRUE;

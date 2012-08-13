@@ -11,6 +11,7 @@ class answer {
 	}
 
 	public function getFromDB($answer_id) {
+		$answer_id = mysql_real_escape_string($answer_id);
 		$query = "SELECT * FROM answer WHERE answer_id = '$answer_id'";
 		$result = mysql_query($query);
 		while ($answer = mysql_fetch_object($result)) {
@@ -24,6 +25,7 @@ class answer {
 	}
 
 	public function set_answer_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> answer_id = $id;
 		return TRUE;
 	}
@@ -33,6 +35,7 @@ class answer {
 	}
 
 	public function set_answer($answer) {
+		$answer = mysql_real_escape_string($answer);
 		$this -> answer = $answer;
 		return TRUE;
 	}

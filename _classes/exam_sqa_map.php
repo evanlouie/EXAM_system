@@ -15,6 +15,7 @@ class exam_sqa_map {
 	}
 
 	public function set_exam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> exam_id = $id;
 		return TRUE;
 	}
@@ -24,6 +25,7 @@ class exam_sqa_map {
 	}
 
 	public function set_sqam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> sqam_id = $id;
 		return TRUE;
 	}

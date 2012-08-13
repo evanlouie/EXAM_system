@@ -16,6 +16,7 @@ class attempt_sqa_map {
 	}
 
 	public function set_attempt_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> attempt_id = $id;
 		return TRUE;
 	}
@@ -25,6 +26,7 @@ class attempt_sqa_map {
 	}
 
 	public function set_sqam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> sqam_id = $id;
 		return TRUE;
 	}
@@ -34,6 +36,7 @@ class attempt_sqa_map {
 	}
 
 	public function set_answer_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> answer_id = $id;
 		return TRUE;
 	}
@@ -66,6 +69,7 @@ class attempt_sqa_map {
 	}
 	
 	public function getAttemptedAnswersAsOjectArray($attempt_id) {
+		$attempt_id = mysql_real_escape_string($attempt_id);
 		$array = array();
 		$query = "SELECT * FROM attempt_sqa_map WHERE attempt_id = '$attempt_id'";
 		$result = mysql_query($query) or die(mysql_error());

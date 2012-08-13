@@ -29,6 +29,7 @@ class exam {
 	}
 
 	public function set_exam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> exam_id = $id;
 		return TRUE;
 	}
@@ -38,6 +39,7 @@ class exam {
 	}
 
 	public function set_title($title) {
+		$title = mysql_real_escape_string($title);
 		$this -> title = $title;
 		return TRUE;
 	}
@@ -156,6 +158,7 @@ class exam {
 	}
 	
 	public function getOutOfScore($exam_id) {
+		$exam_id = mysql_real_escape_string($exam_id);
 		$score = 0;
 		$query = "	SELECT
 						*

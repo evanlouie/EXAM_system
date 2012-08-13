@@ -14,6 +14,7 @@ class user {
 	}
 
 	public function getFromDB($user_id) {
+		$user_id = mysql_real_escape_string($user_id);
 		$query = "SELECT * FROM user WHERE user_id = '$user_id'";
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_num_rows($result) != 0) {
@@ -35,6 +36,7 @@ class user {
 	}
 
 	public function set_user_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> user_id = $id;
 		return TRUE;
 	}
@@ -44,6 +46,7 @@ class user {
 	}
 
 	public function set_first_name($fname) {
+		$fname = mysql_real_escape_string($fname);
 		$this -> first_name = $fname;
 		return TRUE;
 	}
@@ -53,6 +56,7 @@ class user {
 	}
 
 	public function set_last_name($lname) {
+		$lname = mysql_real_escape_string($lname);
 		$this -> last_name = $lname;
 		return TRUE;
 	}
@@ -62,6 +66,7 @@ class user {
 	}
 
 	public function set_email($email) {
+		$email = mysql_real_escape_string($email);
 		$this -> email = $email;
 		return TRUE;
 	}
@@ -71,6 +76,7 @@ class user {
 	}
 
 	public function set_password($password) {
+		$password = mysql_real_escape_string($password);
 		$this -> password = $password;
 		return TRUE;
 	}
@@ -106,6 +112,7 @@ class user {
 	}
 
 	public function availableEmail($email) {
+		$email = mysql_real_escape_string($email);
 		$query = "SELECT * FROM user WHERE email = '$email'";
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_num_rows($result) == 0) {
@@ -116,6 +123,7 @@ class user {
 	}
 
 	public function get_user_id_fromDB($email) {
+		$email = mysql_real_escape_string($email);
 		$query = "SELECT * FROM user WHERE email = '$email'";
 		$result = mysql_query($query) or die(mysql_error());
 		while ($obj = mysql_fetch_object($result)) {
@@ -153,6 +161,7 @@ class user {
 	}
 
 	public function isPasswordRight($password) {
+		$password = mysql_real_escape_string($password);
 		if ($password == $this -> password) {
 			return TRUE;
 		} else {
@@ -161,6 +170,7 @@ class user {
 	}
 	
 	public function userExists($email) {
+		$email = mysql_real_escape_string($email);
 		$query = "SELECT * FROM user WHERE email = '$email'";
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_num_rows($result) == 0) {

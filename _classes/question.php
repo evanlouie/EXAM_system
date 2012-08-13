@@ -11,6 +11,7 @@ class question {
 	}
 
 	public function getFromDB($question_id) {
+		$question_id = mysql_real_escape_string($question_id);
 		$query = "SELECT * FROM question WHERE question_id = '$question_id'";
 		$result = mysql_query($query);
 		while ($question = mysql_fetch_object($result)) {
@@ -24,6 +25,7 @@ class question {
 	}
 
 	public function set_question_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> question_id = $id;
 	}
 
@@ -32,6 +34,7 @@ class question {
 	}
 
 	public function set_question($question) {
+		$question = mysql_real_escape_string($question);
 		$this -> question = $question;
 	}
 

@@ -15,6 +15,7 @@ class attempt_exam_map {
 	}
 
 	public function set_attempt_id($attempt_id) {
+		$attempt_id = mysql_real_escape_string($attempt_id);
 		$this -> attempt_id = $attempt_id;
 		return TRUE;
 	}
@@ -24,6 +25,7 @@ class attempt_exam_map {
 	}
 
 	public function set_exam_id($exam_id) {
+		$exam_id = mysql_real_escape_string($exam_id);
 		$this -> exam_id = $exam_id;
 		return TRUE;
 	}
@@ -35,6 +37,8 @@ class attempt_exam_map {
 	}
 
 	public function deleteFromDB($attempt_id, $exam_id) {
+		$attempt_id = mysql_real_escape_string($attempt_id);
+		$exam_id = mysql_real_escape_string($exam_id);
 		$query = "DELETE FROM attempt_exam_map WHERE attempt_id ='$attempt_id' AND exam_id = '$exam_id'";
 		mysql_query($query) or die(mysql_error());
 		return TRUE;

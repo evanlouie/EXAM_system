@@ -15,6 +15,7 @@ class question_answer_map {
 	}
 
 	public function set_sqam_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> sqam_id = $id;
 		return TRUE;
 	}
@@ -24,6 +25,7 @@ class question_answer_map {
 	}
 
 	public function set_answer_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> answer_id = $id;
 		return TRUE;
 	}
@@ -47,6 +49,7 @@ class question_answer_map {
 	}
 	
 	public function get_all_answer_id_from_sqam_id($sqam_id) {
+		$sqam_id = mysql_real_escape_string($sqam_id);
 		$array = array();
 		$query = "
 					SELECT

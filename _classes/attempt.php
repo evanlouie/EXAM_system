@@ -14,6 +14,7 @@ class attempt {
 	}
 
 	public function getFromDB($attempt_id) {
+		$attempt_id = mysql_real_escape_string($attempt_id);
 		$query = "SELECT * FROM attempt WHERE attempt_id = '$attempt_id'";
 		$result = mysql_query($query) or die(mysql_error());
 		while ($obj = mysql_fetch_object($result)) {
@@ -31,6 +32,7 @@ class attempt {
 	}
 
 	public function set_attempt_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> attempt_id = $id;
 		return TRUE;
 	}
@@ -40,6 +42,7 @@ class attempt {
 	}
 
 	public function set_user_id($id) {
+		$id = mysql_real_escape_string($id);
 		$this -> user_id = $id;
 		return TRUE;
 	}
@@ -49,6 +52,7 @@ class attempt {
 	}
 
 	public function set_score($score) {
+		$score = mysql_real_escape_string($score);
 		$this -> score = $score;
 		return TRUE;
 
@@ -59,6 +63,7 @@ class attempt {
 	}
 
 	public function set_timestamp($timestamp) {
+		$timestamp = mysql_real_escape_string($timestamp);
 		$this -> timestamp = $timestamp;
 		return TRUE;
 	}
@@ -78,6 +83,7 @@ class attempt {
 	}
 
 	public function set_outOf($outOf) {
+		$outOf = mysql_real_escape_string($outOf);
 		$this -> outOf = $outOf;
 		return TRUE;
 	}
@@ -114,6 +120,7 @@ class attempt {
 	}
 
 	public function get_latest_attempt_from_user_id($user_id) {
+		$user_id = mysql_real_escape_string($user_id);
 		$query = "	SELECT
 						*
 					FROM
@@ -129,6 +136,7 @@ class attempt {
 	}
 
 	public function getScore($attempt_id) {
+		$attempt_id = mysql_real_escape_string($attempt_id);
 		$query = "	SELECT
 						a.attempt_id
 					FROM

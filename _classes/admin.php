@@ -10,6 +10,7 @@ class admin {
 	}
 
 	public function set_user_id($user_id) {
+		$user_id = mysql_real_escape_string($user_id);
 		$query = "SELECT * FROM user WHERE '$user_id' = user_id";
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_num_rows($result) == 0) {
@@ -41,6 +42,7 @@ class admin {
 	}
 
 	public function isAdmin($user_id) {
+		$user_id = mysql_real_escape_string($user_id);
 		$query = "SELECT * FROM admin WHERE user_id = '$user_id'";
 		$result = mysql_query($query) or die(mysql_error());
 		if (mysql_num_rows($result) == 0) {
