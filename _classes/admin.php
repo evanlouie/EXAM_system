@@ -9,14 +9,17 @@ class admin extends master {
 	}
 
 	public function set_user_id($user_id) {
-		$user_id = mysql_real_escape_string($user_id);
-		$query = "SELECT * FROM user WHERE '$user_id' = user_id";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) == 0) {
-			die("User does not exist, cannot make admin");
-		} else {
-			$this -> user_id = $user_id;
-			return TRUE;
+		$user_id = $this -> mysqli -> real_escape_string($user_id);
+		$query = "SELECT * FROM user WHERE ? = user_id";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $user_id);
+			$stmt -> execute();
+			$stmt -> store_result();
+			if ($stmt -> num_rows == 0) {
+				die("User does not exist, cannot make admin");
+			} else {
+				$this -> user_id = $user_id;
+			}
 		}
 	}
 
@@ -25,31 +28,42 @@ class admin extends master {
 	}
 
 	public function saveToDB() {
-		$query = "SELECT * FROM admin WHERE user_id = '$this->user_id'";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) == 0) {
-			$query = "INSERT INTO admin VALUES ('$this->user_id')";
-			mysql_query($query) or die(mysql_error());
+		$query = "SELECT * FROM admin WHERE user_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this->user_id);
+			$stmt -> execute() or die($stmt -> error);
+			$stmt -> store_result();
+			if ($stmt -> num_rows == 0) {
+				$query = "INSERT INTO admin VALUES (?)";
+				$stmt = $this -> mysqli -> prepare($query);
+				$stmt -> bind_param('i', $this->user_id);
+				$stmt -> execute() or die($stmt -> error);
+			}
 		}
-		return TRUE;
 	}
 
 	public function deleteFromDB() {
-		$query = "DELETE FROM admin WHERE user_id = '$this->user_id'";
-		mysql_query($query) or die(mysql_error());
+		$query = "DELETE FROM admin WHERE user_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param("i", $this->user_id);
+			$stmt -> execute();
+		}
 		return TRUE;
 	}
 
 	public function isAdmin($user_id) {
-		$user_id = mysql_real_escape_string($user_id);
-		$query = "SELECT * FROM admin WHERE user_id = '$user_id'";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) == 0) {
-			return FALSE;
-		} else {
-			return TRUE;
+		$user_id = $this -> mysqli -> real_escape_string($user_id);
+		$query = "SELECT * FROM admin WHERE user_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $user_id);
+			$stmt -> execute();
+			$stmt -> store_result();
+			if ($stmt -> num_rows == 0) {
+				return FALSE;
+			} else {
+				return TRUE;
+			}
 		}
 	}
-
 }
 ?>
