@@ -6,15 +6,25 @@ class section extends master {
 	public $title;
 	public $status;
 
+	function __construct() {
+		parent::__construct();
+	}
+
 	public function getFromDB($section_id) {
-		$section_id = mysql_real_escape_string($section_id);
-		$query = "SELECT * FROM section WHERE section_id = '$section_id'";
-		$result = mysql_query($query);
-		while ($section = mysql_fetch_object($result)) {
-			$this -> section_id = $section -> section_id;
-			$this -> title = $section -> title;
-			$this -> status = $section -> status;
+		$section_id = $this -> mysqli -> escape_string($section_id);
+		$query = "SELECT * FROM section WHERE section_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $section_id);
+			if ($stmt -> execute()) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					$this -> section_id = $section -> section_id;
+					$this -> title = $section -> title;
+					$this -> status = $section -> status;
+				}
+			}
 		}
+
 	}
 
 	public function get_section_id() {
@@ -22,7 +32,7 @@ class section extends master {
 	}
 
 	public function set_section_id($id) {
-		$id = mysql_real_escape_string($id);
+		$id = $this -> mysqli -> escape_string($id);
 		$this -> section_id = $id;
 		return TRUE;
 	}
@@ -32,7 +42,7 @@ class section extends master {
 	}
 
 	public function set_title($title) {
-		$title = mysql_real_escape_string($title);
+		$title = $this -> mysqli -> escape_string($title);
 		$this -> title = $title;
 		return TRUE;
 	}
@@ -42,7 +52,7 @@ class section extends master {
 	}
 
 	public function set_status($status) {
-		$status = mysql_real_escape_string($status);
+		$status = $this -> mysqli -> escape_string($status);
 		if ($status == 0 || $status == 1) {
 			$this -> status = $status;
 			return TRUE;
@@ -56,35 +66,43 @@ class section extends master {
 		if (isset($this -> section_id)) {
 			die("Section ID is set; either object already exists in DB or user specified ID (which is not allowed)");
 		} else if (isset($this -> title) && isset($this -> status)) {
-			$query = "INSERT INTO section VALUES (NULL, '$this->title', '$this->status')";
-			mysql_query($query) or die(mysql_error());
-			return TRUE;
+			$query = "INSERT INTO section VALUES (NULL, ?, ?)";
+			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+				$stmt -> bind_param('si', $this -> title, $this -> status);
+				return $stmt -> execute();
+			}
 		}
 	}
 
 	public function updateSectionInDB() {
-		$query = "UPDATE section SET title = '$this->title', status = '$this->status' WHERE section_id = '$this->section_id'";
-		mysql_query($query) or die(msyql_error());
-		return TRUE;
+		$query = "UPDATE section SET title = ?, status = ? WHERE section_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('sii', $this -> title, $this -> status, $this -> section_id);
+			return $stmt -> execute();
+		}
 	}
 
 	public function enable() {
-		$query = "UPDATE section SET status = 1 WHERE section_id = '$this -> section_id'";
-		mysql_query($query) or die(mysql_error());
-		return TRUE;
+		$query = "UPDATE section SET status = 1 WHERE section_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this -> section_id);
+			return $stmt -> execute();
+		}
 	}
 
 	public function disable() {
-		$query = "UPDATE section SET status = 0 WHERE section_id = '$this -> section_id'";
-		mysql_query($query) or die(mysql_error());
-		return TRUE;
+		$query = "UPDATE section SET status = 0 WHERE section_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this -> section_id);
+			return $stmt -> execute();
+		}
 	}
 
 	public function getListOfAllSectionsAsObjectArray() {
 		$array = array();
 		$query = "SELECT * FROM section";
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
+		$result = $this->mysqli->query($query) or die($this->mysqli->error);
+		while ($obj = $result->fetch_objecT()) {
 			array_push($array, $obj);
 		}
 		return $array;

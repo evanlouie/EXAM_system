@@ -203,8 +203,8 @@ class section_question_answer_map extends master {
 			$query = "SELECT * FROM answer";
 		}
 
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
+		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
+		while ($obj = $result -> mysqli -> fetch_object()) {
 			array_push($array, $obj);
 		}
 		return $array;
@@ -221,13 +221,18 @@ class section_question_answer_map extends master {
 						question_answer_map as qam,
 						answer as a
 					WHERE
-						'$this->sqam_id' = sqam.sqam_id AND
+						? = sqam.sqam_id AND
 						sqam.sqam_id = qam.sqam_id AND
 						qam.answer_id = a.answer_id AND
-						a.answer_id != '$this->answer_id'";
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
-			array_push($array, $obj);
+						a.answer_id != ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('ii', $this -> sqam_id, $this -> answer_id);
+			if ($stmt -> execute()) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					array_push($array, $obj);
+				}
+			}
 		}
 		return $array;
 	}
@@ -245,16 +250,21 @@ class section_question_answer_map extends master {
 											FROM
 												question_answer_map
 											WHERE
-												sqam_id = '$this->sqam_id'	) AND
+												sqam_id = ?	) AND
 						answer_id NOT IN ( SELECT
 												answer_id
 											FROM
 												section_question_answer_map
 											WHERE
-												sqam_id = '$this->sqam_id'	)";
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
-			array_push($array, $obj);
+												sqam_id = ?	)";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('ii', $this -> sqam_id, $this -> sqam_id);
+			if ($stmt -> execute()) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					array_push($array, $obj);
+				}
+			}
 		}
 		return $array;
 	}

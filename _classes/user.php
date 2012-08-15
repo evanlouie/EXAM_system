@@ -8,23 +8,30 @@ class user extends master {
 	private $email;
 	private $password;
 
+	function __construct() {
+		parent::__construct();
+
+	}
 
 	public function getFromDB($user_id) {
-		$user_id = mysql_real_escape_string($user_id);
-		$query = "SELECT * FROM user WHERE user_id = '$user_id'";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) != 0) {
-			while ($obj = mysql_fetch_object($result)) {
-				$this -> email = $obj -> email;
-				$this -> first_name = $obj -> first_name;
-				$this -> last_name = $obj -> last_name;
-				$this -> password = $obj -> password;
-				$this -> user_id = $obj -> user_id;
+		$user_id = $this -> mysqli -> escape_string($user_id);
+		$query = "SELECT * FROM user WHERE user_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query)) {
+			$stmt -> bind_param('i', $user_id);
+			if ($stmt -> execute()) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					$this -> email = $obj -> email;
+					$this -> first_name = $obj -> first_name;
+					$this -> last_name = $obj -> last_name;
+					$this -> password = $obj -> password;
+					$this -> user_id = $obj -> user_id;
+				}
+				return TRUE;
+			} else {
+				return FALSE;
 			}
-		} else {
-			return FALSE;
 		}
-
 	}
 
 	public function get_user_id() {
@@ -32,7 +39,7 @@ class user extends master {
 	}
 
 	public function set_user_id($id) {
-		$id = mysql_real_escape_string($id);
+		$id = $this -> mysqli -> escape_string($id);
 		$this -> user_id = $id;
 		return TRUE;
 	}
@@ -42,7 +49,7 @@ class user extends master {
 	}
 
 	public function set_first_name($fname) {
-		$fname = mysql_real_escape_string($fname);
+		$fname = $this -> mysqli -> escape_string($fname);
 		$this -> first_name = $fname;
 		return TRUE;
 	}
@@ -52,7 +59,7 @@ class user extends master {
 	}
 
 	public function set_last_name($lname) {
-		$lname = mysql_real_escape_string($lname);
+		$lname = $this -> mysqli -> escape_string($lname);
 		$this -> last_name = $lname;
 		return TRUE;
 	}
@@ -62,7 +69,7 @@ class user extends master {
 	}
 
 	public function set_email($email) {
-		$email = mysql_real_escape_string($email);
+		$email = $this -> mysqli -> escape_string($email);
 		$this -> email = $email;
 		return TRUE;
 	}
@@ -72,58 +79,74 @@ class user extends master {
 	}
 
 	public function set_password($password) {
-		$password = mysql_real_escape_string($password);
+		$password = $this -> mysqli -> escape_string($password);
 		$this -> password = $password;
 		return TRUE;
 	}
 
 	public function saveToDB() {
-		if (isset($this->user_id)) {
+		if (isset($this -> user_id)) {
 			die("user_id set; object already exists in DB");
 		} else {
-			$query = "INSERT INTO user VALUES (NULL, '$this->first_name', '$this->last_name', '$this->email', '$this->password')";
-			mysql_query($query) or die(mysql_error());
-			return TRUE;
+			$query = "INSERT INTO user VALUES (NULL, ?, ?, ?, ?)";
+			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+				$stmt -> bind_param('ssss', $this -> first_name, $this -> last_name, $this -> email, $this -> password);
+				return $stmt -> execute();
+			}
 		}
 	}
 
 	public function deleteFromDB() {
-		if (!isset($this->user_id)) {
+		if (!isset($this -> user_id)) {
 			die("user_id not set; no object referenced in DB");
 		} else {
-			$query = "DELETE FROM user WHERE user_id = '$this->user_id'";
-			mysql_query($query) or die(mysql_error());
-			return TRUE;
+			$query = "DELETE FROM user WHERE user_id = ?";
+			if ($stmt = $this -> mysqli -> prepare($query)) {
+				$stmt -> bind_param('i', $this -> user_id);
+				return $stmt -> execute();
+			}
 		}
 	}
 
 	public function updateInDB() {
-		if (!isset($this->user_id)) {
+		if (!isset($this -> user_id)) {
 			die("user_id not set; no object referenced in DB");
 		} else {
-			$query = "UPDATE user SET first_name = '$this->first_name', last_name = '$this->last_name', email = '$this->email', password = '$this->password' WHERE user_id = '$this->user_id'";
-			mysql_query($query) or die(mysql_error());
-			return TRUE;
+			$query = "UPDATE user SET first_name = ?, last_name = ?, email = ?, password = ? WHERE user_id = ?";
+			if ($stmt = $this -> mysqli -> prepare($query)) {
+				$stmt -> bind_param('ssssi', $this -> first_name, $this -> last_name, $this -> email, $this -> password, $this -> user_id);
+				return $stmt -> execute();
+			}
 		}
 	}
 
 	public function availableEmail($email) {
-		$email = mysql_real_escape_string($email);
-		$query = "SELECT * FROM user WHERE email = '$email'";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) == 0) {
-			return TRUE;
-		} else {
-			return FALSE;
+		$email = $this -> mysqli -> escape_string($email);
+		$query = "SELECT * FROM user WHERE email = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('s', $email);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				if ($result -> num_rows == 0) {
+					return TRUE;
+				} else {
+					return FALSE;
+				}
+			}
 		}
 	}
 
 	public function get_user_id_fromDB($email) {
-		$email = mysql_real_escape_string($email);
-		$query = "SELECT * FROM user WHERE email = '$email'";
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
-			return $obj -> user_id;
+		$email = $this -> mysqli -> escape_string($email);
+		$query = "SELECT * FROM user WHERE email = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('s', $email);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					return $obj -> user_id;
+				}
+			}
 		}
 	}
 
@@ -142,65 +165,95 @@ class user extends master {
 						attempt_exam_map as aem,
 						exam as e
 					WHERE
-						'$this->user_id' = u.user_id AND
+						? = u.user_id AND
 						u.user_id = a.user_id AND
 						a.attempt_id = aem.attempt_id AND
 						aem.exam_id = e.exam_id
 					ORDER BY
 						a.attempt_id";
-
-		$result = mysql_query($query) or die(mysql_error());
-		while ($obj = mysql_fetch_object($result)) {
-			array_push($attempts, $obj);
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this -> user_id);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					array_push($attempts, $obj);
+				}
+			}
 		}
 		return $attempts;
 	}
 
 	public function isPasswordRight($password) {
-		$password = mysql_real_escape_string($password);
+		$password = $this -> mysqli -> escape_string($password);
 		if ($password == $this -> password) {
 			return TRUE;
 		} else {
 			return FALSE;
 		}
 	}
-	
+
 	public function userExists($email) {
-		$email = mysql_real_escape_string($email);
+		$email = $this -> mysqli -> escape_string($email);
 		$query = "SELECT * FROM user WHERE email = '$email'";
-		$result = mysql_query($query) or die(mysql_error());
-		if (mysql_num_rows($result) == 0) {
-			return FALSE;
-		} else {
-			return TRUE;
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('s', $email);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				if ($result -> num_rows == 0) {
+					return FALSE;
+				} else {
+					return TRUE;
+				}
+			}
 		}
+
 	}
-	
+
 	public function getAllUserID() {
 		$query = "SELECT user_id FROM user";
-		$result = mysql_query($query) or die(mysql_error());
+		$result = $this -> mysqli -> query($query);
 		$array = array();
-		while ($obj = mysql_fetch_object($result)) {
+		while ($obj = $result -> fetch_object()) {
 			array_push($array, $obj);
 		}
 		return $array;
 	}
-	
+
 	public function deleteUserAndAllInformation() {
-		$query = "SELECT * FROM attempt WHERE user_id = '$this->user_id'";
-		$result = mysql_query($query) or die(mysql_error());
-		while($obj = mysql_fetch_object($result)) {
-			$q = "DELETE FROM attempt_sqa_map WHERE attempt_id = '$obj->attempt_id' ";
-			mysql_query($q) or die(mysql_error());
-			$q = "DELETE FROM attempt_exam_map WHERE attempt_id = '$obj->attempt_id' ";
-			mysql_query($q) or die(mysql_error());
-			$q = "DELETE FROM attempt WHERE attempt_id = '$obj->attempt_id' ";
-			mysql_query($q) or die(mysql_error());
+		$query = "SELECT * FROM attempt WHERE user_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this -> user_id);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					$q = "DELETE FROM attempt_sqa_map WHERE attempt_id = ?";
+					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+						$s -> bind_param('i', $obj -> attempt_id);
+						$s -> execute or die($s -> error);
+					}
+					$q = "DELETE FROM attempt_exam_map WHERE attempt_id = ?";
+					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+						$s -> bind_param('i', $obj -> attempt_id);
+						$s -> execute or die($s -> error);
+					}
+					$q = "DELETE FROM attempt WHERE attempt_id = ?";
+					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+						$s -> bind_param('i', $obj -> attempt_id);
+						$s -> execute or die($s -> error);
+					}
+				}
+			}
 		}
-		$q = "DELETE FROM admin WHERE user_id = '$this->user_id'";
-		mysql_query($q) or die(mysql_error());
-		$q = "DELETE FROM user WHERE user_id = '$this->user_id'";
-		mysql_query($q) or die(mysql_error());
+		$q = "DELETE FROM admin WHERE user_id = ?";
+		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+			$s -> bind_param('i', $this -> user_id);
+			$s -> execute or die($s -> error);
+		}
+		$q = "DELETE FROM user WHERE user_id = ?";
+		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+			$s -> bind_param('i', $this -> user_id);
+			$s -> execute or die($s -> error);
+		}
 	}
 
 }
