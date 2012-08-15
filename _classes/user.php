@@ -194,7 +194,7 @@ class user extends master {
 
 	public function userExists($email) {
 		$email = $this -> mysqli -> escape_string($email);
-		$query = "SELECT * FROM user WHERE email = '$email'";
+		$query = "SELECT * FROM user WHERE email = ?";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('s', $email);
 			if ($stmt -> execute() or die($stmt -> error)) {
