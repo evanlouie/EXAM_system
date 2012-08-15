@@ -17,7 +17,7 @@ class section extends master {
 			$stmt -> bind_param('i', $section_id);
 			if ($stmt -> execute()) {
 				$result = $stmt -> get_result();
-				while ($obj = $result -> fetch_object()) {
+				while ($section = $result -> fetch_object()) {
 					$this -> section_id = $section -> section_id;
 					$this -> title = $section -> title;
 					$this -> status = $section -> status;
@@ -101,8 +101,8 @@ class section extends master {
 	public function getListOfAllSectionsAsObjectArray() {
 		$array = array();
 		$query = "SELECT * FROM section";
-		$result = $this->mysqli->query($query) or die($this->mysqli->error);
-		while ($obj = $result->fetch_objecT()) {
+		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
+		while ($obj = $result -> fetch_objecT()) {
 			array_push($array, $obj);
 		}
 		return $array;

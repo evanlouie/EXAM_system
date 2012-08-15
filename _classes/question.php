@@ -92,7 +92,7 @@ class question extends master {
 		$array = array();
 		$query = "SELECT * FROM question";
 		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
-		while ($obj = $result -> get_object()) {
+		while ($obj = $result -> fetch_object()) {
 			array_push($array, $obj);
 		}
 		return $array;
