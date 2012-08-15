@@ -53,7 +53,7 @@ foreach ($attemptedAnswers as $key => $attempt_sqa_map) {
 		$questionAnswers[$attempt_sqa_map -> section_id] = array();
 	}
 	array_push($questionAnswers[$attempt_sqa_map -> section_id], $attempt_sqa_map);
-	$attempt_sqa_map -> section_id["title"] = $attempt_sqa_map -> section_title;
+	@$attempt_sqa_map -> section_id["title"] = $attempt_sqa_map -> section_title;
 }
 
 foreach ($questionAnswers as $section_id => $sectionArray) {
