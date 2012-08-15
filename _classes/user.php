@@ -229,17 +229,17 @@ class user extends master {
 					$q = "DELETE FROM attempt_sqa_map WHERE attempt_id = ?";
 					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 						$s -> bind_param('i', $obj -> attempt_id);
-						$s -> execute or die($s -> error);
+						$s -> execute() or die($s -> error);
 					}
 					$q = "DELETE FROM attempt_exam_map WHERE attempt_id = ?";
 					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 						$s -> bind_param('i', $obj -> attempt_id);
-						$s -> execute or die($s -> error);
+						$s -> execute() or die($s -> error);
 					}
 					$q = "DELETE FROM attempt WHERE attempt_id = ?";
 					if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 						$s -> bind_param('i', $obj -> attempt_id);
-						$s -> execute or die($s -> error);
+						$s -> execute() or die($s -> error);
 					}
 				}
 			}
@@ -247,12 +247,12 @@ class user extends master {
 		$q = "DELETE FROM admin WHERE user_id = ?";
 		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 			$s -> bind_param('i', $this -> user_id);
-			$s -> execute or die($s -> error);
+			$s -> execute() or die($s -> error);
 		}
 		$q = "DELETE FROM user WHERE user_id = ?";
 		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 			$s -> bind_param('i', $this -> user_id);
-			$s -> execute or die($s -> error);
+			$s -> execute() or die($s -> error);
 		}
 	}
 
