@@ -219,7 +219,7 @@ class user extends master {
 		return $array;
 	}
 
-	public function deleteUserAndAllInformation() {
+	public function deleteAllUserAttempts() {
 		$query = "SELECT * FROM attempt WHERE user_id = ?";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('i', $this -> user_id);
@@ -244,6 +244,10 @@ class user extends master {
 				}
 			}
 		}
+	}
+
+	public function deleteUserAndAllInformation() {
+		$this -> deleteAllUserAttempts();
 		$q = "DELETE FROM admin WHERE user_id = ?";
 		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
 			$s -> bind_param('i', $this -> user_id);

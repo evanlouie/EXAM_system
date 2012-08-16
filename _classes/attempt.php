@@ -19,7 +19,7 @@ class attempt extends master {
 			$stmt -> bind_param('i', $attempt_id);
 			$stmt -> execute() or die($stmt -> error);
 			$result = $stmt -> get_result();
-			while ($obj = $result->fetch_object()) {
+			while ($obj = $result -> fetch_object()) {
 				$this -> attempt_id = $obj -> attempt_id;
 				$this -> score = $obj -> score;
 				$this -> timestamp = $obj -> timestamp;
@@ -175,6 +175,26 @@ class attempt extends master {
 			$rows = $result -> num_rows;
 			return $rows;
 		}
+	}
+
+	public function deleteAttempt() {
+
+		$q = "DELETE FROM attempt_sqa_map WHERE attempt_id = ?";
+		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+			$s -> bind_param('i', $this -> attempt_id);
+			$s -> execute() or die($s -> error);
+		}
+		$q = "DELETE FROM attempt_exam_map WHERE attempt_id = ?";
+		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+			$s -> bind_param('i', $this -> attempt_id);
+			$s -> execute() or die($s -> error);
+		}
+		$q = "DELETE FROM attempt WHERE attempt_id = ?";
+		if ($s = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+			$s -> bind_param('i', $this -> attempt_id);
+			$s -> execute() or die($s -> error);
+		}
+
 	}
 
 }
