@@ -194,7 +194,7 @@ class exam extends master {
 	}
 
 	public function getOutOfScore($exam_id) {
-		$exam_id = mysql_real_escape_string($exam_id);
+		$exam_id = $this->mysqli->escape_string($exam_id);
 		$score = 0;
 		$query = "	SELECT
 						*
@@ -204,7 +204,7 @@ class exam extends master {
 					WHERE
 						? = e.exam_id AND
 						e.exam_id = esm.exam_id";
-		if ($stmt = $this -> mysqli -> prepare($query) or die(mysql_error)) {
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this->mysqli->error)) {
 			$stmt -> bind_param('i', $exam_id);
 			if ($stmt -> execute()) {
 				$result = $stmt -> get_result();
