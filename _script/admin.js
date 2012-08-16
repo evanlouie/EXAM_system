@@ -207,6 +207,11 @@ $(document).ready(function() {
 			$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList');
 		});
 	});
+	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function () {
+		section_id = $(this).attr('value');
+		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id='+section_id);
+		
+	})
 	$('#newExam').focus(function() {
 		if ($('#newExam').attr('value') == "Title") {
 			$('#newExam').attr('value', '');

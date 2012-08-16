@@ -444,7 +444,7 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										</tr>
 										<tr>
 											<td>Choose the question:</td>
-											<td>
+											<td id='questionChosenForSectionQuestionIncorrectAnswerCell'>
 											<select
 											id="questionChosenForSectionQuestionIncorrectAnswer"
 											name="question" style="width: 100%">
