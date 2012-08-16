@@ -209,7 +209,9 @@ $(document).ready(function() {
 	});
 	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function () {
 		section_id = $(this).attr('value');
-		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id='+section_id);
+		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id='+section_id, function() {
+			reloadIncorrectAnswerList();
+		});
 		
 	})
 	$('#newExam').focus(function() {
