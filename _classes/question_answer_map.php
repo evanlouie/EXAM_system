@@ -76,7 +76,7 @@ class question_answer_map extends master {
 			$stmt -> bind_param('ii', $sqam_id, $sqam_id);
 			if ($stmt -> execute()) {
 				$result = $stmt -> get_result();
-				while ($obj = $result -> get_object()) {
+				while ($obj = $result -> fetch_object()) {
 					array_push($array, $obj);
 				}
 			}

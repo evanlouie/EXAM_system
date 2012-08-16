@@ -19,7 +19,7 @@ class attempt extends master {
 			$stmt -> bind_param('i', $attempt_id);
 			$stmt -> execute() or die($stmt -> error);
 			$result = $stmt -> get_result();
-			while ($obj = mysql_fetch_object($result)) {
+			while ($obj = $result->fetch_object()) {
 				$this -> attempt_id = $obj -> attempt_id;
 				$this -> score = $obj -> score;
 				$this -> timestamp = $obj -> timestamp;

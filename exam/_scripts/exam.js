@@ -68,11 +68,13 @@ $(document).ready(function() {
 		$.get('_callbacks/exam.php?enable&attempt_id=' + attempt_id);
 		var count = 0;
 		var length = $('code.question').length;
+		var score = 0;
 		while (count < length) {
 			var question = $('code.question')[count];
 			var answer = $(question).find('.answer').text();
 			if (answer == 'correct') {
 				$(question).css("background-color", "#B7F5B7");
+				score++;
 			} else {
 				$(question).css("background-color", "#F8A7A7");
 			}
@@ -80,6 +82,7 @@ $(document).ready(function() {
 		}
 		$.get('_callbacks/attempt.php?attempt_id=' + attempt_id + '&outOf=' + length);
 		$.get('_callbacks/aemManager.php?create&attempt_id=' + attempt_id + '&exam_id=' + exam_id);
+		$.get('_callbacks/attempt.php?attempt_id=' + attempt_id + '&score=' + score);
 		var questionList = $('code.question');
 		$('.section').show();
 		
