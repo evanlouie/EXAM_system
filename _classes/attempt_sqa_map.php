@@ -84,7 +84,7 @@ class attempt_sqa_map extends master {
 	public function getAttemptedAnswersAsOjectArray($attempt_id) {
 		$attempt_id = $this -> mysqli -> escape_string($attempt_id);
 		$array = array();
-		$query = "SELECT * FROM attempt_sqa_map WHERE attempt_id = ?";
+		$query = "SELECT * FROM attempt_sqa_map, attempt WHERE attempt.status = 1 AND attempt.attempt_id = attempt_sqa_map.attempt_id AND attempt_sqa_map.attempt_id = attempt_id = ?";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('i', $attempt_id);
 			$stmt -> execute() or die($stmt -> error);

@@ -5,44 +5,68 @@ foreach (glob("../../_classes/*.php") as $filename) {
 
 if (isset($_GET['exams'])) {
 	$exam = new exam;
-	$exams = $exam -> getListOfAllExamsAsObjectArray();
-	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Exam ID</strong></td><td><strong>Exam Title</td></tr>";
+	$exams = $exam -> getListOfAllExamsAsObjectArrayIncludingDisabled();
+	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Exam ID</strong></td><td><strong>Exam Title</td><td><strong>Status</strong></td><td><strong>Enable</strong></td><td><strong>Disable</strong></td></tr>";
 	while (!empty($exams)) {
 		$exam = array_pop($exams);
-		$code = $code . "<tr><td>$exam->exam_id</td><td><a href='exam.php?exam_id=$exam->exam_id'>$exam->title</a></td></tr>";
+		$code = $code . "	<tr>
+							<td class = 'exam_id'>$exam->exam_id</td>
+							<td><a href='exam.php?exam_id=$exam->exam_id'>$exam->title</a></td>
+							<td>$exam->status</td>
+							<td><button class='enableExam'>Enable</button></td>
+							<td><button class='disableExam'>Disable</button>
+							</tr>";
 	}
 	$code = $code . "</tbody></table>";
 	echo $code;
 }
 if (isset($_GET['sections'])) {
 	$section = new section;
-	$sections = $section->getListOfAllSectionsAsObjectArray();
-	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Section ID</strong></td><td><strong>Section Title</td></tr>";
+	$sections = $section->getListOfAllSectionsAsObjectArrayIncludingDisabled();
+	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Section ID</strong></td><td><strong>Section Title</td><td><strong>Status</strong></td><td><strong>Enable</strong></td><td><strong>Disable</strong></td></tr>";
 	while (!empty($sections)) {
 		$section = array_pop($sections);
-		$code = $code . "<tr><td>$section->section_id</td><td><a href='section.php?section_id=$section->section_id'>$section->title</a></td></tr>";
+		$code = $code . "	<tr>
+							<td class='section_id'>$section->section_id</td>
+							<td><a href='section.php?section_id=$section->section_id'>$section->title</a></td>
+							<td>$section->status</td>
+							<td><button class='enableSection'>Enable</button></td>
+							<td><button class='disableSection'>Disable</button>
+							</tr>";
 	}
 	$code = $code . "</tbody></table>";
 	echo $code;
 }
 if (isset($_GET['questions'])) {
 	$question = new question;
-	$questions = $question->getListOfAllQuestionsAsObjectArray();
-	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Question ID</strong></td><td><strong>Question</td></tr>";
+	$questions = $question->getListOfAllQuestionsAsObjectArrayIncludingDisabled();
+	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Question ID</strong></td><td><strong>Question</td><td><strong>Status</strong></td><td><strong>Enable</strong></td><td><strong>Disable</strong></td></tr>";
 	while (!empty($questions)) {
 		$question = array_pop($questions);
-		$code = $code . "<tr><td>$question->question_id</td><td><a href='question.php?question_id=$question->question_id'>$question->question</a></td></tr>";
+		$code = $code . "<tr>
+							<td class='question_id'>$question->question_id</td>
+							<td><a href='question.php?question_id=$question->question_id'>$question->question</a></td>
+							<td>$question->status</td>
+							<td><button class='enableQuestion'>Enable</button></td>
+							<td><button class='disableQuestion'>Disable</button>
+							</tr>";
 	}
 	$code = $code . "</tbody></table>";
 	echo $code;
 }
 if (isset($_GET['answers'])) {
 	$answer = new answer;
-	$answers = $answer->getListOfAllAnswersAsObjectArray();
-	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Answer ID</strong></td><td><strong>Answer</td></tr>";
+	$answers = $answer->getListOfAllAnswersAsObjectArrayIncludingDisabled();
+	$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Answer ID</strong></td><td><strong>Answer</td><td><strong>Status</strong></td><td><strong>Enable</strong></td><td><strong>Disable</strong></td></tr>";
 	while (!empty($answers)) {
 		$answer = array_pop($answers);
-		$code = $code . "<tr><td>$answer->answer_id</td><td><a href='answer.php?answer_id=$answer->answer_id'>$answer->answer</a></td></tr>";
+		$code = $code . "<tr>
+							<td class='answer_id'>$answer->answer_id</td>
+							<td><a href='answer.php?answer_id=$answer->answer_id'>$answer->answer</a></td>
+							<td>$answer->status</td>
+							<td><button class='enableAnswer'>Enable</button></td>
+							<td><button class='disableAnswer'>Disable</button>
+							</tr>";
 	}
 	$code = $code . "</tbody></table>";
 	echo $code;
@@ -113,5 +137,49 @@ if (isset($_GET['edit'])) {
 	}
 }
 
+if (isset($_GET['disable'])) {
+	if (isset($_GET['exam_id'])) {
+		$exam = new exam;
+		$exam -> getFromDB($_GET['exam_id']);
+		$exam ->disable();
+	}
+	if (isset($_GET['section_id'])) {
+		$section = new section;
+		$section -> getFromDB($_GET['section_id']);
+		$section -> disable();
+	}
+	if (isset($_GET['question_id'])) {
+		$question = new question;
+		$question -> getFromDB($_GET['question_id']);
+		$question -> disable();
+	}
+	if (isset($_GET['answer_id'])) {
+		$answer = new answer;
+		$answer -> getFromDB($_GET['answer_id']);
+		$answer -> disable();
+	}
+}
+if (isset($_GET['enable'])) {
+	if (isset($_GET['exam_id'])) {
+		$exam = new exam;
+		$exam -> getFromDB($_GET['exam_id']);
+		$exam ->enable();
+	}
+	if (isset($_GET['section_id'])) {
+		$section = new section;
+		$section -> getFromDB($_GET['section_id']);
+		$section -> enable();
+	}
+	if (isset($_GET['question_id'])) {
+		$question = new question;
+		$question -> getFromDB($_GET['question_id']);
+		$question -> enable();
+	}
+	if (isset($_GET['answer_id'])) {
+		$answer = new answer;
+		$answer -> getFromDB($_GET['answer_id']);
+		$answer -> enable();
+	}
+}
 
 ?>

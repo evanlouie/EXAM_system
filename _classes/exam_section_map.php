@@ -31,7 +31,18 @@ class exam_section_map extends master {
 
 	public function saveToDB() {
 		if (isset($this -> exam_id) && isset($this -> section_id)) {
-			$query = "SELECT * FROM exam_section_map WHERE exam_id = ? AND section_id = ?";
+			$query = "SELECT * 
+						FROM 
+							exam_section_map AS esm, 
+							exam AS e, 
+							section AS s 
+						WHERE 
+							esm.exam_id = ? AND 
+							esm.section_id = ? AND 
+							esm.exam_id = e.exam_id AND 
+							esm.section_id = s.section_id AND 
+							e.status = 1 AND 
+							s.status = 1";
 			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 				$stmt -> bind_param('ii', $this -> exam_id, $this -> section_id);
 				$stmt -> execute() or die($stmt -> error);
@@ -81,7 +92,9 @@ class exam_section_map extends master {
 						s.section_id = ? AND
 						s.section_id = sqam.section_id AND
 						sqam.sqam_id = esqam.sqam_id AND
-						esqam.exam_id = e.exam_id";
+						esqam.exam_id = e.exam_id AND
+						e.status = 1 AND
+						s.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('ii', $this -> exam_id, $this -> section_id);
 			$stmt -> execute() or die($stmt -> error);
@@ -100,6 +113,7 @@ class exam_section_map extends master {
 					FROM
 						question
 					WHERE
+						status = 1 AND
 						question_id NOT IN (
 											SELECT 
 												sqam.question_id

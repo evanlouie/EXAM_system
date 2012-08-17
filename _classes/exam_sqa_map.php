@@ -31,7 +31,7 @@ class exam_sqa_map extends master {
 
 	public function saveToDB() {
 		if (isset($this -> exam_id) && isset($this -> sqam_id)) {
-			$query = "SELECT * FROM exam_sqa_map WHERE exam_id = ? AND sqam_id = ?";
+			$query = "SELECT * FROM exam_sqa_map AS esm, exam AS e, section AS s WHERE esm.exam_id = ? AND esm.sqam_id = ? AND esm.exam_id = e.exam_id AND esm.section_id = s.section_id AND e.status = 1 AND s.status = 1";
 			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 				$stmt -> bind_param('ii', $this -> exam_id, $this -> sqam_id);
 				$stmt -> execute();

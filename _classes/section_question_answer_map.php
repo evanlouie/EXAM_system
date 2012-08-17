@@ -172,9 +172,10 @@ class section_question_answer_map extends master {
 							answer as a,
 							question_answer_map as qam
 						WHERE
+							a.status=1 AND (
 							'$this->answer_id' = a.answer_id OR
 							('$this->sqam_id' = qam.sqam_id AND
-							qam.answer_id = a.answer_id)";
+							qam.answer_id = a.answer_id))";
 			if ($stmt = $this -> mysqli -> prepare($query)) {
 				$stmt -> bind_param('ii', $this -> answer_id, $this -> sqam_id);
 				if ($stmt -> execute()) {
@@ -198,9 +199,10 @@ class section_question_answer_map extends master {
 							section_question_answer_map as sqam,
 							answer as a
 						WHERE
-							'$this->answer_id' != a.answer_id";
+							'$this->answer_id' != a.answer_id AND
+							a.status = 1";
 		} else {
-			$query = "SELECT * FROM answer";
+			$query = "SELECT * FROM answer WHERE a.status = 1";
 		}
 
 		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
@@ -224,7 +226,8 @@ class section_question_answer_map extends master {
 						? = sqam.sqam_id AND
 						sqam.sqam_id = qam.sqam_id AND
 						qam.answer_id = a.answer_id AND
-						a.answer_id != ?";
+						a.answer_id != ? AND
+						a.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('ii', $this -> sqam_id, $this -> answer_id);
 			if ($stmt -> execute()) {
@@ -245,6 +248,7 @@ class section_question_answer_map extends master {
 					FROM
 						answer
 					WHERE
+						status = 1 AND
 						answer_id NOT IN (	SELECT
 												answer_id
 											FROM

@@ -68,10 +68,17 @@ class question_answer_map extends master {
 					FROM
 						question_answer_map as qam,
 						section_question_answer_map as sqam
+						answer as a,
+						question as q
 					WHERE
 						? = qam.sqam_id AND
 						? = sqam.sqam_id AND
-						sqam.answer_id != qam.answer_id";
+						qam.answer_id = a.answer_id AND
+						sqam.answer_id = a.answer_id AND
+						sqam.question_id = q.question_id AND
+						sqam.answer_id != qam.answer_id AND
+						a.status = 1 AND
+						q.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query)) {
 			$stmt -> bind_param('ii', $sqam_id, $sqam_id);
 			if ($stmt -> execute()) {

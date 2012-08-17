@@ -4,6 +4,7 @@ class question extends master {
 
 	public $question_id;
 	public $question;
+	public $status;
 
 	function __construct() {
 		parent::__construct();
@@ -42,13 +43,34 @@ class question extends master {
 		$this -> question = $question;
 	}
 
+	public function get_status() {
+		return $this -> status;
+	}
+
+	public function set_status($status) {
+		$this -> status = $this -> mysqli -> escape_string($status);
+		return TRUE;
+	}
+
+	public function enable() {
+		$this -> status = 1;
+		$query = "UPDATE question SET status = 1 WHERE question_id = $this->question_id";
+		$this -> mysqli -> query($query);
+	}
+
+	public function disable() {
+		$this -> status = 0;
+		$query = "UPDATE question SET status =0 WHERE question_id = $this->question_id";
+		$this -> mysqli -> query($query);
+	}
+
 	public function saveToDatabase() {
 		if (!isset($this -> question)) {
 			die("No question text is set");
 		} else if (isset($question_id)) {
 			die("question_id is set; therefore object must already exist in DB");
 		} else {
-			$query = "INSERT INTO question VALUES (NULL, ?)";
+			$query = "INSERT INTO question VALUES (NULL, ?, 1)";
 			if ($stmt = $this -> mysqli -> prepare($query)) {
 				$stmt -> bind_param('s', $this -> question);
 				if ($stmt -> execute()) {
@@ -89,6 +111,15 @@ class question extends master {
 	}
 
 	public function getListOfAllQuestionsAsObjectArray() {
+		$array = array();
+		$query = "SELECT * FROM question WHERE status = 1";
+		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
+		while ($obj = $result -> fetch_object()) {
+			array_push($array, $obj);
+		}
+		return $array;
+	}
+	public function getListOfAllQuestionsAsObjectArrayIncludingDisabled() {
 		$array = array();
 		$query = "SELECT * FROM question";
 		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);

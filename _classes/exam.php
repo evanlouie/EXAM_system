@@ -4,6 +4,7 @@ class exam extends master {
 
 	public $exam_id;
 	public $title;
+	public $status;
 
 	function __construct() {
 		parent::__construct();
@@ -47,11 +48,32 @@ class exam extends master {
 		return TRUE;
 	}
 
+	public function get_status() {
+		return $this -> status;
+	}
+
+	public function set_status($status) {
+		$this -> status = $this -> mysqli -> escape_string($status);
+		return TRUE;
+	}
+
+	public function enable() {
+		$this -> status = 1;
+		$query = "UPDATE exam SET status = 1 WHERE exam_id = $this->exam_id";
+		$this -> mysqli -> query($query);
+	}
+
+	public function disable() {
+		$this -> status = 0;
+		$query = "UPDATE exam SET status =0 WHERE exam_id = $this->exam_id";
+		$this -> mysqli -> query($query);
+	}
+
 	public function saveToDB() {
 		if (isset($this -> exam_id)) {
 			die("exam_id is set, object already exists in DB or user illegal operation");
 		} else {
-			$query = "INSERT INTO exam VALUES (NULL, ?)";
+			$query = "INSERT INTO exam VALUES (NULL, ?, 1)";
 			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 				$stmt -> bind_param('s', $this -> title);
 				if ($stmt -> execute()) {
@@ -111,6 +133,7 @@ class exam extends master {
 						exam_section_map as esmap
 					WHERE
 						? = e.exam_id AND
+						e.status = 1 AND
 						e.exam_id = esm.exam_id AND
 						e.exam_id = esmap.exam_id AND
 						esmap.section_id = sqam.section_id AND
@@ -129,7 +152,7 @@ class exam extends master {
 
 	public function getListOfAllExamsAsObjectArray() {
 		$array = array();
-		$query = "SELECT * FROM exam";
+		$query = "SELECT * FROM exam WHERE status = 1";
 		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
 		while ($obj = $result -> fetch_object()) {
 			array_push($array, $obj);
@@ -137,6 +160,16 @@ class exam extends master {
 		return $array;
 	}
 
+	public function getListOfAllExamsAsObjectArrayIncludingDisabled() {
+		$array = array();
+		$query = "SELECT * FROM exam";
+		$result = $this -> mysqli -> query($query) or die($this -> mysqli -> error);
+		while ($obj = $result -> fetch_object()) {
+			array_push($array, $obj);
+		}
+		return $array;
+	}
+	
 	public function getAllIncludedSectionsAsObjectArray() {
 		$array = array();
 		$query = "
@@ -148,8 +181,10 @@ class exam extends master {
 						section as s
 					WHERE
 						? = e.exam_id AND
+						e.status = 1 AND
 						e.exam_id = esm.exam_id AND
-						esm.section_id = s.section_id";
+						esm.section_id = s.section_id AND
+						s.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('i', $this -> exam_id);
 			$stmt -> execute();
@@ -169,6 +204,7 @@ class exam extends master {
 					FROM
 						section
 					WHERE
+						status = 1 AND
 						section_id NOT IN (
 											SELECT 
 												s.section_id
@@ -203,6 +239,7 @@ class exam extends master {
 						exam_sqa_map as esm
 					WHERE
 						? = e.exam_id AND
+						e.status = 1 AND
 						e.exam_id = esm.exam_id";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('i', $exam_id);
