@@ -17,4 +17,5 @@ if (isset($_GET['delete']) && isset($_GET['exam_id']) && isset($_GET['section_id
 	$esm -> set_sqam_id($sqam_id);
 	$esm -> deleteFromDB();
 }
+
 ?>

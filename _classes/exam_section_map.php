@@ -33,16 +33,10 @@ class exam_section_map extends master {
 		if (isset($this -> exam_id) && isset($this -> section_id)) {
 			$query = "SELECT * 
 						FROM 
-							exam_section_map AS esm, 
-							exam AS e, 
-							section AS s 
+							exam_section_map
 						WHERE 
-							esm.exam_id = ? AND 
-							esm.section_id = ? AND 
-							esm.exam_id = e.exam_id AND 
-							esm.section_id = s.section_id AND 
-							e.status = 1 AND 
-							s.status = 1";
+							exam_id = ? AND 
+							section_id = ?";
 			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 				$stmt -> bind_param('ii', $this -> exam_id, $this -> section_id);
 				$stmt -> execute() or die($stmt -> error);
