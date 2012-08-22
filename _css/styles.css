@@ -272,3 +272,17 @@ img.editSectionButton:hover {
 	z-index: 1001;
 	overflow: auto;
 }
+
+#loadingBox {
+	display: none;
+	background: #000000;
+	opacity: 0.9;
+	filter: alpha(opacity = 90);
+/*	position: absolute;*/
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	min-width: 100%;
+	min-height: 100%;
+	z-index: 1000;
+}

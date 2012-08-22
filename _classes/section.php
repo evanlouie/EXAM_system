@@ -74,7 +74,7 @@ class section extends master {
 		} else if (isset($this -> title) && isset($this -> status)) {
 			$query = "INSERT INTO section VALUES (NULL, ?, 1)";
 			if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
-				$stmt -> bind_param('si', $this -> title);
+				$stmt -> bind_param('s', $this -> title);
 				return $stmt -> execute();
 			}
 		}

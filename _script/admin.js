@@ -207,12 +207,12 @@ $(document).ready(function() {
 			$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList');
 		});
 	});
-	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function () {
+	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function() {
 		section_id = $(this).attr('value');
-		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id='+section_id, function() {
+		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id=' + section_id, function() {
 			reloadIncorrectAnswerList();
 		});
-		
+
 	})
 	$('#newExam').focus(function() {
 		if ($('#newExam').attr('value') == "Title") {
@@ -309,7 +309,7 @@ $(document).ready(function() {
 	$(document).on('click', '#createAnswerInQuestionManager', function() {
 		var answerText = $('#newAnswerInQuestionManager').attr('value');
 		$.get('answerManager.php?create=1&answer=' + answerText, function() {
-			
+
 			reloadIncorrectAnswerList();
 			$('#newAnswerInQuestionManager').attr('value', 'Answer Text');
 			alert('Answer Created');
