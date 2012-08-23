@@ -82,12 +82,15 @@ if (isset($_GET['user_id']) && isset($_GET['loadAttempts'])) {
 							<td><strong>Delete</strong</td>
 						</tr>";
 		while (!empty($attempts)) {
+
 			$attempt = array_pop($attempts);
+			$a = new attempt;
+			$a -> getFromDB($attempt -> attempt_id);
 			$code = $code . "	<tr id='$attempt->attempt_id'>
 								<td class='attempt_id'><a href='../../attempt?attempt_id=$attempt->attempt_id' target='_blank'>$attempt->attempt_id</a></td>
 								<td class='exam_title'>$attempt->title</td>
 								<td class='score'>$attempt->score</td>
-								<td class='outOf'>" . $exam -> getOutOfScore($attempt -> exam_id) . "</td>
+								<td class='outOf'>" . $a->get_OutOfScore(). "</td>
 								<td class='timestamp'>$attempt->timestamp</td>
 								<td class='deleteAttemptCell'><button class='deleteAttemptButton'>Delete</button></td>
 							</tr>";
@@ -123,7 +126,7 @@ if (isset($_GET['delete']) && isset($_GET['attempt_id'])) {
 }
 if (isset($_GET['deleteAttempts']) && isset($_GET['user_id'])) {
 	$user = new user;
-	$user->getFromDB($_GET['user_id']);
-	$user->deleteAllUserAttempts();
+	$user -> getFromDB($_GET['user_id']);
+	$user -> deleteAllUserAttempts();
 }
 ?>

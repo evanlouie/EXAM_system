@@ -33,6 +33,22 @@ class section_question_answer_map extends master {
 			return FALSE;
 	}
 
+	public function get_from_db($section_id, $question_id, $answer_id) {
+		$query = "SELECT * FROM section_question_answer_map WHERE section_id = ? AND question_id = ? and answer_id = ?";
+		if ($stmt = $this -> mysqli -> prepare($query)) {
+			$stmt -> bind_param('iii', $section_id, $question_id, $answer_id);
+			$stmt -> execute();
+			$result = $stmt -> get_result();
+			while ($obj = $result -> fetch_object()) {
+				$this -> sqam_id = $obj -> sqam_id;
+				$this -> section_id = $obj -> section_id;
+				$this -> question_id = $obj -> question_id;
+				$this -> answer_id = $obj -> answer_id;
+				$this -> status = $obj -> status;
+			}
+		}
+	}
+
 	public function get_sqam_id() {
 		return $this -> sqam_id;
 	}
@@ -94,16 +110,19 @@ class section_question_answer_map extends master {
 			if ($stmt = $this -> mysqli -> prepare($query)) {
 				$stmt -> bind_param('ii', $this -> section_id, $this -> question_id);
 				if ($stmt -> execute()) {
-					$result = $stmt -> get_result();
-					if ($result -> num_rows > 0) {
-						die("This section already has this question in it; a section can only have a question once!");
-					} else {
-						$query = "INSERT INTO section_question_answer_map VALUES (NULL, ?, ?, ?, ?)";
-						if ($stmt = $this -> mysqli -> prepare($query)) {
-							$stmt -> bind_param('iiii', $this -> section_id, $this -> question_id, $this -> answer_id, $this -> status);
-							if ($stmt -> execute()) {
-								return TRUE;
-							}
+					
+					// $result = $stmt -> get_result();
+					// if ($result -> num_rows > 0) {
+					// die("This section already has this question in it; a section can only have a question once!");
+					// } else {
+					$stmt -> close();
+					$q = "INSERT INTO section_question_answer_map VALUES (NULL, ?, ?, ?, ?)";
+					if ($s = $this -> mysqli -> prepare($q) or die($this->mysqli->error)) {
+						$s -> bind_param('iiii', $this -> section_id, $this -> question_id, $this -> answer_id, $this -> status);
+						if ($s -> execute()) {
+							return TRUE;
+						} else {
+							return FALSE;
 						}
 					}
 				}

@@ -176,6 +176,17 @@ class attempt extends master {
 			return $rows;
 		}
 	}
+	
+	public function get_OutOfScore() {
+		$query = "SELECT * FROM attempt AS a, attempt_sqa_map AS asm, section_question_answer_map AS sqam WHERE ? = a.attempt_id AND a.attempt_id = asm.attempt_id AND asm.sqam_id = sqam.sqam_id";
+		if ($stmt = $this->mysqli->prepare($query) or die($this->mysqli->error)) {
+			$stmt -> bind_param('i', $this->attempt_id);
+			if ($stmt -> execute() or die ($stmt -> error)) {
+				$result = $stmt -> get_result();
+				return $result->num_rows;
+			}
+		}
+	}
 
 	public function deleteAttempt() {
 

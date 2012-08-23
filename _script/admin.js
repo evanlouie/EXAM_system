@@ -344,8 +344,8 @@ $(document).ready(function() {
 		question_id = $(this).attr('value');
 		exam_id = $('#chosenExamToEdit option:selected').attr('value');
 		section_id = $('#chosenSectionToEdit option:selected').attr('value');
-		$.get('sqamManager.php?delete=1&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=1&status=1');
-		$.get('esqamManager.php?delete=1&section_id=' + section_id + '&exam_id=' + exam_id + '&question_id=' + question_id);
+		$.get('sqamManager.php?edit&section_id=' + section_id + '&question_id=' + question_id + '&answer_id=1&status=0');
+		$.get('esqamManager.php?delete&section_id=' + section_id + '&exam_id=' + exam_id + '&question_id=' + question_id);
 		$('#includedQuestionListContainer').load('index.php?exam_id=' + exam_id + '&section_id=' + section_id + ' #includedQuestionList');
 	});
 	$(document).on('click', '.excludedQuestion', function() {
@@ -362,23 +362,6 @@ $(document).ready(function() {
 	$('code#sectionQuestionManager').hide();
 	$('code#sectionQuestionAnswerManager').hide();
 	$('code#sectionQuestionIncorrectAnswerManager').hide();
-
-	$(document).on('click', 'img.editExamButton', function() {
-		section_id = $(this).closest('tr').find('.includedSection').attr('value');
-		exam_id = $('#chosenExam').attr('value');
-		reloadQuestionList(exam_id, section_id);
-		$('#chosenExamToEdit').val(exam_id);
-		$('#chosenSectionToEditContainer').load('index.php?exam_id=' + exam_id + ' #chosenSectionToEdit', function() {
-			$('#chosenSectionToEdit').val(section_id);
-			$('#chosenSectionToEdit').attr('disabled', true);
-			$('#chosenExamToEdit').attr('disabled', true);
-			$('#loadQuestions').attr('disabled', true);
-			$('#sectionQuestionManager').appendTo('#lightboxContent');
-			$('#sectionQuestionManager').show();
-			$('h2#lightboxHeader').text('Section Manager');
-			$("#lightbox, #lightbox-panel").fadeIn(300);
-		});
-	});
 
 	$(document).on('click', 'img.editEntryButton', function() {
 		value = $(this).closest('tr').children().last().attr('value');
@@ -411,7 +394,22 @@ $(document).ready(function() {
 			});
 		};
 	});
-
+	$(document).on('click', 'img.editExamButton', function() {
+		section_id = $(this).closest('tr').find('.includedSection').attr('value');
+		exam_id = $('#chosenExam').attr('value');
+		reloadQuestionList(exam_id, section_id);
+		$('#chosenExamToEdit').val(exam_id);
+		$('#chosenSectionToEditContainer').load('index.php?exam_id=' + exam_id + ' #chosenSectionToEdit', function() {
+			$('#chosenSectionToEdit').val(section_id);
+			$('#chosenSectionToEdit').attr('disabled', true);
+			$('#chosenExamToEdit').attr('disabled', true);
+			$('#loadQuestions').attr('disabled', true);
+			$('#sectionQuestionManager').appendTo('#lightboxContent');
+			$('#sectionQuestionManager').show();
+			$('h2#lightboxHeader').text('Section Manager');
+			$("#lightbox, #lightbox-panel").fadeIn(300);
+		});
+	});
 	$(document).on('click', 'img.editSectionButton', function() {
 		exam_id = $('#chosenExamToEdit').attr('value');
 		section_id = $('#chosenSectionToEdit').attr('value');

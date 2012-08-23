@@ -6,7 +6,7 @@ function createExam($exam_id) {
 
 	$everything = $exam -> getAllSQAM();
 
-	$e = new examManager();
+	$e = new examManager;
 	$e -> set_exam_id($exam -> get_exam_id());
 	$e -> set_title($exam -> get_title());
 
@@ -37,7 +37,7 @@ function createExam($exam_id) {
 		$e -> addQuestionAnswerManagerTosqam($sqam);
 
 	}
-	//var_dump($e -> get_sqams());
+
 	return $e;
 
 }

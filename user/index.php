@@ -38,7 +38,9 @@ if (isset($user)) {
 		$code = "<table style='width:100%'><tbody><tr><td style='width:10%'><strong>Attempt ID</strong></td><td style='width:40%'><strong>Exam</strong></td><td><strong>Score</strong></td><td><strong>Date</strong></td></tr>";
 		while (!empty($attempts)) {
 			$attempt = array_pop($attempts);
-			$code = $code . "<tr><td><a href='../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td><td>$attempt->title</td><td>$attempt->score /" . $exam -> getOutOfScore($attempt -> exam_id) . "</td><td>$attempt->timestamp</td></tr>";
+			$a = new attempt;
+			$a -> getFromDB($attempt->attempt_id);
+			$code = $code . "<tr><td><a href='../attempt?attempt_id=$attempt->attempt_id'>$attempt->attempt_id</a></td><td>$attempt->title</td><td>$attempt->score /" . $a->get_OutOfScore() . "</td><td>$attempt->timestamp</td></tr>";
 		}
 		$code = $code . "</tbody></table>";
 	}

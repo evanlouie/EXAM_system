@@ -10,7 +10,9 @@ if (isset($_GET['create']) && isset($_GET['section_id']) && isset($_GET['questio
 	$sqam -> set_answer_id($_GET['answer_id']);
 	$sqam -> set_status($_GET['status']);
 	$sqam -> saveToDatabase();
+		
 }
+
 if (isset($_GET['delete']) && isset($_GET['sqam_id'])) {
 	$sqam -> getFromDB($_GET['sqam_id']);
 	$sqam -> deleteFromDB();
