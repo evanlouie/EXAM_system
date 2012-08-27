@@ -50,6 +50,7 @@ foreach ($e as $section => $sqamArray) {
 		foreach ($sqam->incorrectAnswers as $answer_id => $answer) {
 			$a = "<tr><td></td><td><input type='radio' name='answer' value='$answer_id'/>$answer</td></tr>";
 			array_push($answers, $a);
+			
 		}
 		shuffle($answers);
 		foreach ($answers as $key => $answer) {

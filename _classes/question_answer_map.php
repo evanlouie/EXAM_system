@@ -59,7 +59,39 @@ class question_answer_map extends master {
 			return FALSE;
 	}
 
-	public function get_all_answer_id_from_sqam_id($sqam_id) {
+	// public function get_all_answer_id_from_sqam_id($sqam_id) {
+		// $sqam_id = $this -> mysqli -> escape_string($sqam_id);
+		// $array = array();
+		// $query = "
+					// SELECT
+						// qam.answer_id
+					// FROM
+						// question_answer_map as qam,
+						// section_question_answer_map as sqam
+						// answer as a,
+						// question as q
+					// WHERE
+						// ? = qam.sqam_id AND
+						// ? = sqam.sqam_id AND
+						// qam.answer_id = a.answer_id AND
+						// sqam.answer_id = a.answer_id AND
+						// sqam.question_id = q.question_id AND
+						// sqam.answer_id != qam.answer_id AND
+						// a.status = 1 AND
+						// q.status = 1";
+		// if ($stmt = $this -> mysqli -> prepare($query)) {
+			// $stmt -> bind_param('ii', $sqam_id, $sqam_id);
+			// if ($stmt -> execute()) {
+				// $result = $stmt -> get_result();
+				// while ($obj = $result -> fetch_object()) {
+					// array_push($array, $obj);
+				// }
+			// }
+		// }
+// 
+		// return $array;
+	// }
+		public function get_all_answer_id_from_sqam_id($sqam_id) {
 		$sqam_id = $this -> mysqli -> escape_string($sqam_id);
 		$array = array();
 		$query = "
@@ -67,7 +99,7 @@ class question_answer_map extends master {
 						qam.answer_id
 					FROM
 						question_answer_map as qam,
-						section_question_answer_map as sqam
+						section_question_answer_map as sqam,
 						answer as a,
 						question as q
 					WHERE
@@ -75,7 +107,6 @@ class question_answer_map extends master {
 						? = sqam.sqam_id AND
 						qam.answer_id = a.answer_id AND
 						sqam.answer_id = a.answer_id AND
-						sqam.question_id = q.question_id AND
 						sqam.answer_id != qam.answer_id AND
 						a.status = 1 AND
 						q.status = 1";

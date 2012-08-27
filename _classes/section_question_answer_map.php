@@ -192,8 +192,8 @@ class section_question_answer_map extends master {
 							question_answer_map as qam
 						WHERE
 							a.status=1 AND (
-							'$this->answer_id' = a.answer_id OR
-							('$this->sqam_id' = qam.sqam_id AND
+							? = a.answer_id OR
+							(? = qam.sqam_id AND
 							qam.answer_id = a.answer_id))";
 			if ($stmt = $this -> mysqli -> prepare($query)) {
 				$stmt -> bind_param('ii', $this -> answer_id, $this -> sqam_id);

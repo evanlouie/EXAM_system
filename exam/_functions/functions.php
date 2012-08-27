@@ -21,6 +21,9 @@ function createExam($exam_id) {
 		$answer -> getFromDB($sqamap -> answer_id);
 		$section -> getFromDB($sqamap -> section_id);
 		$incorrectAnswers = $qam -> get_all_answer_id_from_sqam_id($sqamap -> sqam_id);
+		$sqamm = new section_question_answer_map;
+		$sqamm ->getFromDB($sqamap->sqam_id);
+		$incorrectAnswers = $sqamm ->getAllAssociatedAnswersAsObjectArray();
 
 		$sqam -> set_question_id($question -> get_question_id());
 		$sqam -> set_question($question -> get_question());
@@ -46,7 +49,7 @@ function getExamDividedIntoSections(examManager $exam) {
 	$sections = array();
 	foreach ($exam->sqams as $key => $sqam) {
 		$sections[$sqam -> section_id] = array();
-		//var_dump($sqam);
+	//	var_dump($sqam);
 	}
 	foreach ($exam->sqams as $key => $sqam) {
 		array_push($sections[$sqam -> section_id], $sqam);
