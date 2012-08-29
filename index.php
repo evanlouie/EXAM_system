@@ -1,17 +1,27 @@
 <?php
-foreach ( glob ( "_classes/*.php" ) as $filename ) {
+foreach (glob ( "_classes/*.php" ) as $filename) {
 	require "$filename";
 }
 
 require "_functions/functions.php";
 
-session_start ();
-if (isset ( $_SESSION ['user_id'] )) {
-	$user_id = $_SESSION ['user_id'];
-	$user = new user ();
-	$user->getFromDB ( $user_id );
-	$code = "Welcome Back " . $user->get_first_name () . "!";
+session_start();
+$adminText = '';
+if (isset($_SESSION['user_id'])) {
+	$user_id = $_SESSION['user_id'];
+	$user = new user();
+	$user -> getFromDB($user_id);
+	$code = "Welcome Back " . $user -> get_first_name() . "!";
 	$code = $code . " <a href='user/'>Continue to user page</a></br><a href='logout.php'>Not you? click here</a>";
+
+	$admin = new admin;
+	if ($admin -> isAdmin($user -> get_user_id())) {
+		$adminText = '<p>For System Admin Control, please proceed here:</p>
+			<code>
+				<a href="admin">Admin Control</a>
+			</code>';
+	}
+
 } else {
 	$code = '
 			Please login:
@@ -33,7 +43,6 @@ if (isset ( $_SESSION ['user_id'] )) {
 			</form>
 			First times user? <a href="register/"><strong>Register Now!</strong></a>';
 }
-
 ?>
 
 <html lang="en">
@@ -54,19 +63,16 @@ if (isset ( $_SESSION ['user_id'] )) {
 			<p>For standard user usage, please proceed here:</p>
 			<code><?php echo $code ?></code>
 
-			<p>For System Admin Control, please proceed here:</p>
-			<code>
-				<a href="admin">Admin Control</a>
-			</code>
-
+			<?php echo $adminText ?>
+				
 			<p>
 				If you are using the exam for the very first time, you should start
 				by reading the <a href="The Exam System - User Guide.pptx">User Guide</a>.
 			</p>
 		</div>
 
-	<?php echoFooter() ?>
-</div>
+		<?php echoFooter() ?>
+	</div>
 
 </body>
 </html>
