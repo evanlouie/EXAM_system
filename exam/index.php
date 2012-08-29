@@ -46,7 +46,9 @@ foreach ($e as $section => $sqamArray) {
 		$questionCount++;
 		$answers = array();
 		//var_dump($sqam);
-		array_push($answers, "<tr><td></td><td><input type='radio' name='answer' value='$sqam->answer_id'/>$sqam->answer</td></tr>");
+		
+		//Commented out after changing to different answer grabbing function
+		//array_push($answers, "<tr><td></td><td><input type='radio' name='answer' value='$sqam->answer_id'/>$sqam->answer</td></tr>"); 
 		foreach ($sqam->incorrectAnswers as $answer_id => $answer) {
 			$a = "<tr><td></td><td><input type='radio' name='answer' value='$answer_id'/>$answer</td></tr>";
 			array_push($answers, $a);
