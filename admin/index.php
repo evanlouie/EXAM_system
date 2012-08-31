@@ -52,6 +52,26 @@ while (!empty($questionObjectArray)) {
 		$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
 	}
 }
+if (isset($_GET['section_id'])) {
+	$section = new section;
+	$section -> getFromDB($_GET['section_id']);
+	$questionList = '';
+
+	$questionObjectArray = $section -> getAllEnabledAssociatedQuestions();
+	while (!empty($questionObjectArray)) {
+		$obj = array_pop($questionObjectArray);
+		if (isset($_GET['question_id'])) {
+			if ($_GET['question_id'] == $obj -> question_id) {
+				$questionList = $questionList . "<option value='$obj->question_id' selected='selected'>$obj->question</option>";
+			} else {
+				$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
+			}
+		} else {
+			$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
+		}
+	}
+	var_dump($questionList);
+}
 
 if (isset($_GET['exam_id'])) {
 	$exam = new exam();
@@ -290,9 +310,8 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										</tr>
 										<tr>
 											<td></td>
-											<td>
-<!-- 											<button id="loadSections" style="float: right;">
-												Load Exam
+											<td><!-- 											<button id="loadSections" style="float: right;">
+											Load Exam
 											</button> --></td>
 										</tr>
 									</tbody>
@@ -370,10 +389,9 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 											</tr>
 											<tr>
 												<td></td>
-												<td>
-<!-- 												<button id="loadQuestions" style="float: right;">
-													Load
-													Section
+												<td><!-- 												<button id="loadQuestions" style="float: right;">
+												Load
+												Section
 												</button> --></td>
 											</tr>
 										</tbody>
@@ -454,10 +472,9 @@ if (isset($_GET['sectionQuestionAnswer']) && isset($_GET['section_id']) && isset
 										</tr>
 										<tr>
 											<td></td>
-											<td>
-<!-- 											<button id="loadIncorrectAnswers" style="float: right;">
-												Load
-												question
+											<td><!-- 											<button id="loadIncorrectAnswers" style="float: right;">
+											Load
+											question
 											</button> --></td>
 										</tr>
 									</tbody>

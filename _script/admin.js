@@ -179,9 +179,6 @@ $(document).ready(function() {
 		});
 	});
 
-	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function() {
-		reloadIncorrectAnswerList();
-	})
 	$(document).on('change', '#questionChosenForSectionQuestionIncorrectAnswer', function() {
 		reloadIncorrectAnswerList();
 	})
@@ -209,7 +206,7 @@ $(document).ready(function() {
 	});
 	$(document).on('change', '#sectionChosenForSectionQuestionIncorrectAnswer', function() {
 		section_id = $(this).attr('value');
-		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('sectionManager.php?getQuestions&section_id=' + section_id, function() {
+		$('#questionChosenForSectionQuestionIncorrectAnswerCell').load('index.php?section_id=' + section_id + ' #questionChosenForSectionQuestionIncorrectAnswer', function() {
 			reloadIncorrectAnswerList();
 		});
 
@@ -414,9 +411,10 @@ $(document).ready(function() {
 		exam_id = $('#chosenExamToEdit').attr('value');
 		section_id = $('#chosenSectionToEdit').attr('value');
 		question_id = $(this).closest('tr').find('.includedQuestion').attr('value');
-		$('#questionChosenForSectionQuestionIncorrectAnswer').val(question_id);
-		$('#sectionChosenForSectionQuestionIncorrectAnswer').val(section_id);
+
 		$('#incorrectAnswerList').load('index.php?sectionQuestionIncorrectAnswer=1&section_id=' + section_id + '&question_id=' + question_id + ' #incorrectAnswerList', function() {
+			$('#questionChosenForSectionQuestionIncorrectAnswer').val(question_id);
+			$('#sectionChosenForSectionQuestionIncorrectAnswer').val(section_id);
 			$('#sectionChosenForSectionQuestionIncorrectAnswer').attr('disabled', true);
 			$('#questionChosenForSectionQuestionIncorrectAnswer').attr('disabled', true);
 			$('#loadIncorrectAnswers').attr('disabled', true);

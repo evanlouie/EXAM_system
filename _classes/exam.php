@@ -137,7 +137,8 @@ class exam extends master {
 						e.exam_id = esm.exam_id AND
 						e.exam_id = esmap.exam_id AND
 						esmap.section_id = sqam.section_id AND
-						esm.sqam_id = sqam.sqam_id";
+						esm.sqam_id = sqam.sqam_id AND
+						sqam.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('i', $this -> exam_id);
 			if ($stmt -> execute() or die($stmt -> error)) {

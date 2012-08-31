@@ -133,6 +133,30 @@ class section extends master {
 		}
 		return $array;
 	}
+	
+	public function getAllEnabledAssociatedQuestions() {
+		$array = array();
+		$query = "SELECT * FROM section_question_answer_map WHERE section_id = ? AND status = 1";
+		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
+			$stmt -> bind_param('i', $this -> section_id);
+			if ($stmt -> execute() or die($stmt -> error)) {
+				$result = $stmt -> get_result();
+				while ($obj = $result -> fetch_object()) {
+					$q = 'SELECT * FROM question WHERE question.question_id = ? AND question.status = 1';
+					if ($stmt = $this -> mysqli -> prepare($q) or die($this -> mysqli -> error)) {
+						$stmt -> bind_param('i', $obj -> question_id);
+						if ($stmt -> execute() or die($stmt -> error)) {
+							$r = $stmt -> get_result();
+							while ($o = $r -> fetch_object()) {
+								array_push($array, $o);
+							}
+						}
+					}
+				}
+			}
+		}
+		return $array;
+	}
 
 }
 ?>

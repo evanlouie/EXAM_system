@@ -88,7 +88,8 @@ class exam_section_map extends master {
 						sqam.sqam_id = esqam.sqam_id AND
 						esqam.exam_id = e.exam_id AND
 						e.status = 1 AND
-						s.status = 1";
+						s.status = 1 AND 
+						sqam.status = 1";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('ii', $this -> exam_id, $this -> section_id);
 			$stmt -> execute() or die($stmt -> error);
@@ -124,7 +125,10 @@ class exam_section_map extends master {
 												s.section_id = ? AND
 												s.section_id = sqam.section_id AND
 												sqam.sqam_id = esqam.sqam_id AND
-												esqam.exam_id = e.exam_id
+												esqam.exam_id = e.exam_id AND
+												e.status = 1 AND
+						s.status = 1 AND 
+						sqam.status = 1
 											)";
 		if ($stmt = $this -> mysqli -> prepare($query) or die($this -> mysqli -> error)) {
 			$stmt -> bind_param('ii', $this -> exam_id, $this -> section_id);
