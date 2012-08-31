@@ -70,7 +70,6 @@ if (isset($_GET['section_id'])) {
 			$questionList = $questionList . "<option value='$obj->question_id'>$obj->question</option>";
 		}
 	}
-	var_dump($questionList);
 }
 
 if (isset($_GET['exam_id'])) {
